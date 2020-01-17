@@ -46,3 +46,16 @@ resources:
               Condition:
                 StringEquals:
                   "aws:Referer": { Ref: AWS::AccountId }
+    aliases:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: aliases
+        AttributeDefinitions:
+          - AttributeName: alias
+            AttributeType: S
+        KeySchema:
+          - AttributeName: alias
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1

@@ -1,15 +1,16 @@
 "use strict";
 
-const AWS = require("aws-sdk");
+import { S3 } from "aws-sdk";
+import { S3Event } from "aws-lambda";
 
-const s3 = new AWS.S3({
+const s3 = new S3({
   apiVersion: "2006-03-01",
   region: process.env.AWSREGION
 });
 
 const simpleParser = require("mailparser").simpleParser;
 
-module.exports.main = async event => {
+export const main = async (event: S3Event) => {
   console.log("Received incoming email:", JSON.stringify(event, null, 2));
   const record = event.Records[0];
   // Retrieve the email from your bucket

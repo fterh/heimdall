@@ -2,16 +2,20 @@
 
 import { S3 } from "aws-sdk";
 import { S3Event } from "aws-lambda";
+import { simpleParser } from "mailparser";
+
+import forwardInbound from "./forwardInbound";
+import { extractEmailAliases } from "./utils";
 
 const s3 = new S3({
   apiVersion: "2006-03-01",
-  region: process.env.AWSREGION
+  region: process.env.AWSREGION // TODO check if this should be AWS_REGION instead
 });
 
-const simpleParser = require("mailparser").simpleParser;
-
 export const handler = async (event: S3Event) => {
-  console.log("Received incoming email:", JSON.stringify(event, null, 2));
+  console.log(
+    `Received incoming email; object key = ${event.Records[0].s3.object.key}`
+  );
   const record = event.Records[0];
   // Retrieve the email from your bucket
   const request = {
@@ -21,16 +25,12 @@ export const handler = async (event: S3Event) => {
 
   try {
     const data = await s3.getObject(request).promise();
-    // console.log('Raw email:' + data.Body);
-    const email = await simpleParser(data.Body);
-    console.log("date:", email.date);
-    console.log("subject:", email.subject);
-    console.log("body:", email.text);
-    console.log("from:", email.from.text);
-    console.log("attachments:", email.attachments);
-    return { status: "success" };
+    const email = await simpleParser(data.Body as Buffer);
+    const aliases = extractEmailAliases(email);
+
+    await Promise.all(aliases.map(alias => forwardInbound(alias, email)));
   } catch (Error) {
-    console.log(Error, Error.stack);
+    console.error(Error, Error.stack);
     return Error;
   }
 };

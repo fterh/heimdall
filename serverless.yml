@@ -16,6 +16,7 @@ provider:
       Action:
         - s3:*
         - dynamodb:*
+        - ses:*
       Resource: "*"
 
 functions:

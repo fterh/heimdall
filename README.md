@@ -2,7 +2,7 @@
 
 ## Setup
 
-1. Define environment variables `DOMAIN=yourverifieddomain.com`, `EMAIL=yourpersonalemail@domain.com`.
+1. Define environment variables `DOMAIN=yourverifieddomain.com` and `EMAIL=yourpersonalemail@domain.com` in `.env.sample`, and rename to `.env`.
 
 ## Known Limitations
 

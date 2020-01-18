@@ -1,6 +1,7 @@
 import { SESV2 } from "aws-sdk";
 import { ParsedMail } from "mailparser";
-import { getEmailSource } from "./utils";
+import { domain, email } from "./env";
+import getEmailSource from "./getEmailSource";
 
 /**
  * Forwards received email to personal email.
@@ -13,14 +14,14 @@ export default async (alias: string, parsedMail: ParsedMail): Promise<void> => {
   try {
     const source = await getEmailSource(alias);
     const params: SESV2.SendEmailRequest = {
-      FromEmailAddress: `${alias}@${process.env.DOMAIN}`,
+      FromEmailAddress: `${alias}@${domain()}`,
       Destination: {
-        ToAddresses: [process.env.EMAIL as string],
+        ToAddresses: [email()],
         CcAddresses: [],
         BccAddresses: []
       },
       ReplyToAddresses: [],
-      FeedbackForwardingEmailAddress: process.env.EMAIL as string,
+      FeedbackForwardingEmailAddress: email(),
       Content: {
         Simple: {
           Subject: {

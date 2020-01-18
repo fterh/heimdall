@@ -4,8 +4,8 @@ import { S3 } from "aws-sdk";
 import { S3Event } from "aws-lambda";
 import { simpleParser } from "mailparser";
 
-import forwardInbound from "./forwardInbound";
-import { extractEmailAliases } from "./utils";
+import forwardInbound from "../lib/forwardInbound";
+import extractEmailAliases from "../lib/extractEmailAliases";
 
 const s3 = new S3({
   apiVersion: "2006-03-01",

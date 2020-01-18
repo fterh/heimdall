@@ -1,10 +1,12 @@
 {
   "dependencies": {
     "aws-sdk": "^2.605.0",
+    "dotenv": "^8.2.0",
     "mailparser": "^2.7.7"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.39",
+    "@types/dotenv": "^8.2.0",
     "@types/mailparser": "^2.7.0",
     "@types/node": "^13.1.7",
     "serverless-plugin-typescript": "^1.1.9",

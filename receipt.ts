@@ -10,7 +10,7 @@ const s3 = new S3({
 
 const simpleParser = require("mailparser").simpleParser;
 
-export const main = async (event: S3Event) => {
+export const handler = async (event: S3Event) => {
   console.log("Received incoming email:", JSON.stringify(event, null, 2));
   const record = event.Records[0];
   // Retrieve the email from your bucket

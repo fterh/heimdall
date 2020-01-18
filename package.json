@@ -5,6 +5,7 @@
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.39",
+    "@types/mailparser": "^2.7.0",
     "@types/node": "^13.1.7",
     "serverless-plugin-typescript": "^1.1.9",
     "typescript": "^3.7.5"

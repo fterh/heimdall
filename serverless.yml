@@ -20,7 +20,7 @@ provider:
 
 functions:
   incoming:
-    handler: incoming.main
+    handler: receipt.handler
     events:
       - s3:
           bucket: ${self:custom.bucket}

@@ -10,17 +10,13 @@ export default async (alias: string): Promise<string> => {
     }
   };
 
-  try {
-    const res = await docClient.get(params).promise();
-    if (!res.Item) {
-      throw new Error(`Alias=${alias} not found in database!`);
-    }
-
-    if (!res.Item.source) {
-      throw new Error(`Alias=${alias} does not have a "source" attribute!`);
-    }
-    return res.Item.source as string;
-  } catch (err) {
-    throw err;
+  const res = await docClient.get(params).promise();
+  if (!res.Item) {
+    throw new Error(`Alias=${alias} not found in database!`);
   }
+
+  if (!res.Item.source) {
+    throw new Error(`Alias=${alias} does not have a "source" attribute!`);
+  }
+  return res.Item.source as string;
 };

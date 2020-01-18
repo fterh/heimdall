@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "lint": "npx typescript --strict --checkJs && npx eslint **/*.ts"
+    "lint": "npx typescript --strict --checkJs && npx eslint **/*.ts",
+    "test": "echo 'No tests yet'"
   },
   "dependencies": {
     "aws-sdk": "^2.605.0",

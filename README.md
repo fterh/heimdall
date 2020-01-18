@@ -1,5 +1,7 @@
 # heimdall
 
+[![Build Status](https://travis-ci.com/fterh/heimdall.svg?branch=master)](https://travis-ci.com/fterh/heimdall)
+
 ## Setup
 
 1. Define environment variables `DOMAIN=yourverifieddomain.com` and `EMAIL=yourpersonalemail@domain.com` in `.env.sample`, and rename to `.env`.

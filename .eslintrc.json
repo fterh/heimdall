@@ -21,7 +21,10 @@
   "plugins": ["@typescript-eslint", "prettier"],
   "rules": {
     "no-unused-vars": ["off"],
-    "@typescript-eslint/no-unused-vars-experimental": ["warn"],
+    "@typescript-eslint/no-unused-vars-experimental": [
+      "warn",
+      { "ignoreArgsIfArgsAfterAreUsed": true }
+    ],
     "prettier/prettier": "error"
   }
 }

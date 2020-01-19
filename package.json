@@ -1,7 +1,7 @@
 {
   "scripts": {
     "lint": "tsc --strict --noEmit && eslint **/*.ts",
-    "test": "jest"
+    "test": "DOMAIN=domain.com EMAIL=user@mydomain.com jest"
   },
   "dependencies": {
     "aws-sdk": "^2.605.0",
@@ -19,7 +19,9 @@
     "@types/node": "^13.1.7",
     "@typescript-eslint/eslint-plugin": "^2.16.0",
     "@typescript-eslint/parser": "^2.16.0",
+    "aws-sdk-mock": "^5.0.0",
     "babel-jest": "^24.9.0",
+    "eml-format": "^0.6.1",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.9.0",
     "eslint-plugin-prettier": "^3.1.2",

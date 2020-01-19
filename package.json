@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "lint": "npx typescript --strict --checkJs && npx eslint **/*.ts",
     "test": "echo 'No tests yet'"
+    "lint": "tsc --strict --noEmit && eslint **/*.ts",
   },
   "dependencies": {
     "aws-sdk": "^2.605.0",

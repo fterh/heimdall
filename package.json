@@ -1,7 +1,7 @@
 {
   "scripts": {
     "lint": "tsc --strict --noEmit && eslint **/*.ts",
-    "test": "DOMAIN=domain.com EMAIL=user@mydomain.com jest"
+    "test": "DOMAIN=domain.com EMAIL=user@mydomain.com jest --coverage"
   },
   "dependencies": {
     "aws-sdk": "^2.605.0",

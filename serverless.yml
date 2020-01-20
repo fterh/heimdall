@@ -4,8 +4,8 @@ plugins:
   - serverless-plugin-typescript
 
 custom:
-  bucket: heimdallbucket
-  bucketRef: S3BucketHeimdallbucket
+  bucket: heimdall${file(lib/env.js):awsId}
+  bucketRef: S3BucketHeimdall${file(lib/env.js):awsId}
 
 provider:
   name: aws
@@ -32,7 +32,7 @@ functions:
 
 resources:
   Resources:
-    S3EMailBucketPermissions:
+    S3BucketPermissions:
       Type: AWS::S3::BucketPolicy
       Properties:
         Bucket:

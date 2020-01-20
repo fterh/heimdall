@@ -1,8 +1,12 @@
 import path from "path";
 import * as AWSMock from "aws-sdk-mock";
-import { domain } from "../../../lib/env";
 import generate from "../../../lib/commands/generate";
+import * as sendResponse from "../../../lib/commands/sendResponse";
+import { domain, email } from "../../../lib/env";
+import { Commands } from "../../../lib/reserved";
 import generateTestEmail from "../../utils/generateTestEmail";
+
+jest.mock("../../../lib/commands/sendResponse");
 
 type Callback = (err: any, data: any) => void;
 
@@ -17,7 +21,6 @@ afterEach(() => {
 
 it("should store the alias-source record and send a response email for a successful outcome", async () => {
   const mockDocumentClient = jest.fn();
-  const mockSES = jest.fn();
 
   AWSMock.mock(
     "DynamoDB.DocumentClient",
@@ -27,11 +30,6 @@ it("should store the alias-source record and send a response email for a success
       callback(null, null);
     }
   );
-
-  AWSMock.mock("SESV2", "sendEmail", (params: any, callback: Callback) => {
-    mockSES(params);
-    callback(null, null);
-  });
 
   const testEmail = await generateTestEmail({
     to: [{ email: "test@domain.com" }],
@@ -46,11 +44,11 @@ it("should store the alias-source record and send a response email for a success
     source: "Some source"
   });
 
-  expect(mockSES.mock.calls.length).toBe(1);
-  expect(mockSES.mock.calls[0][0].Content.Simple.Subject.Data).toBe(
-    "Generated alias: fakeid"
-  );
-  expect(mockSES.mock.calls[0][0].Content.Simple.Body.Text.Data).toBe(
+  expect(sendResponse.default).toHaveBeenCalledTimes(1);
+  expect(sendResponse.default).toHaveBeenCalledWith(
+    `${Commands.Generate}@${domain}`,
+    email,
+    "Generated alias: fakeid",
     `You have generated fakeid@${domain} for "Some source".`
   );
 });

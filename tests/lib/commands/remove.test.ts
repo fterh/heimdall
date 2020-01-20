@@ -1,8 +1,8 @@
 import path from "path";
 import * as AWSMock from "aws-sdk-mock";
-import { domain, email } from "../../../lib/env";
 import remove from "../../../lib/commands/remove";
 import * as sendResponse from "../../../lib/commands/sendResponse";
+import { domain, email } from "../../../lib/env";
 import { Commands } from "../../../lib/reserved";
 import generateTestEmail from "../../utils/generateTestEmail";
 

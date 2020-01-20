@@ -2,6 +2,11 @@ import path from "path";
 import * as AWSMock from "aws-sdk-mock";
 import { DynamoDB } from "aws-sdk";
 import list from "../../../lib/commands/list";
+import * as sendResponse from "../../../lib/commands/sendResponse";
+import { domain, email } from "../../../lib/env";
+import { Commands } from "../../../lib/reserved";
+
+jest.mock("../../../lib/commands/sendResponse");
 
 type Callback = (err: any, data: any) => void;
 
@@ -16,7 +21,6 @@ afterEach(() => {
 
 it("should send a response email with a list of alias-source records", async () => {
   const mockDocumentClient = jest.fn();
-  const mockSES = jest.fn();
 
   AWSMock.mock(
     "DynamoDB.DocumentClient",
@@ -43,27 +47,24 @@ it("should send a response email with a list of alias-source records", async () 
     }
   );
 
-  AWSMock.mock("SESV2", "sendEmail", (params: any, callback: Callback) => {
-    mockSES(params);
-    callback(null, null);
-  });
-
   await list();
 
   expect(mockDocumentClient.mock.calls.length).toBe(1);
 
-  expect(mockSES.mock.calls.length).toBe(1);
-  expect(mockSES.mock.calls[0][0].Content.Simple.Subject.Data).toContain(
+  expect(sendResponse.default).toHaveBeenCalledTimes(1);
+  expect((sendResponse.default as jest.Mock).mock.calls[0][0]).toBe(
+    `${Commands.List}@${domain}`
+  );
+  expect((sendResponse.default as jest.Mock).mock.calls[0][1]).toBe(email);
+  expect((sendResponse.default as jest.Mock).mock.calls[0][2]).toContain(
     "Alias list"
   );
-  expect(mockSES.mock.calls[0][0].Content.Simple.Body.Text.Data).toBe(
+  expect((sendResponse.default as jest.Mock).mock.calls[0][3]).toBe(
     "Alias : Source\nalias1 : source1\nalias2 : source2\nalias3 : source3\n"
   );
 });
 
 it("should send a response email indicating no records found", async () => {
-  const mockSES = jest.fn();
-
   AWSMock.mock(
     "DynamoDB.DocumentClient",
     "scan",
@@ -75,24 +76,14 @@ it("should send a response email indicating no records found", async () => {
     }
   );
 
-  AWSMock.mock("SESV2", "sendEmail", (params: any, callback: Callback) => {
-    mockSES(params);
-    callback(null, null);
-  });
-
   await list();
 
-  expect(mockSES.mock.calls[0][0].Content.Simple.Subject.Data).toContain(
-    "Alias list"
-  );
-  expect(mockSES.mock.calls[0][0].Content.Simple.Body.Text.Data).toBe(
+  expect((sendResponse.default as jest.Mock).mock.calls[0][3]).toBe(
     "No aliases found."
   );
 });
 
 it("should notify user that there might be missing records", async () => {
-  const mockSES = jest.fn();
-
   AWSMock.mock(
     "DynamoDB.DocumentClient",
     "scan",
@@ -121,21 +112,14 @@ it("should notify user that there might be missing records", async () => {
     }
   );
 
-  AWSMock.mock("SESV2", "sendEmail", (params: any, callback: Callback) => {
-    mockSES(params);
-    callback(null, null);
-  });
-
   await list();
 
-  expect(mockSES.mock.calls[0][0].Content.Simple.Body.Text.Data).toContain(
+  expect((sendResponse.default as jest.Mock).mock.calls[0][3]).toContain(
     "There might be more records in the results set. Check the logs and database for more information."
   );
 });
 
 it("should notify user that there is malformed data", async () => {
-  const mockSES = jest.fn();
-
   AWSMock.mock(
     "DynamoDB.DocumentClient",
     "scan",
@@ -163,14 +147,9 @@ it("should notify user that there is malformed data", async () => {
     }
   );
 
-  AWSMock.mock("SESV2", "sendEmail", (params: any, callback: Callback) => {
-    mockSES(params);
-    callback(null, null);
-  });
-
   await list();
 
-  expect(mockSES.mock.calls[0][0].Content.Simple.Body.Text.Data).toContain(
+  expect((sendResponse.default as jest.Mock).mock.calls[0][3]).toContain(
     "The database contains malformed records. Check the logs and database for more information."
   );
 });

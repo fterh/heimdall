@@ -19,7 +19,7 @@ export default async (parsedMail: ParsedMail): Promise<void> => {
   await docClient.delete(params).promise();
   console.log("Deletion successful");
 
-  sendResponse(
+  await sendResponse(
     `${Commands.Remove}@${domain}`,
     email,
     `Delete alias ${providedAlias}`,

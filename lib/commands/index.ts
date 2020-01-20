@@ -26,7 +26,7 @@ export default async (command: string, parsedMail: ParsedMail) => {
         break;
 
       case Commands.Remove:
-        await remove();
+        await remove(parsedMail);
         break;
 
       default:

@@ -1,11 +1,12 @@
+import path from "path";
 import * as AWSMock from "aws-sdk-mock";
-import * as AWS from "aws-sdk";
 import getEmailSource from "../../lib/getEmailSource";
 
 type Callback = (err: any, data: any) => void;
 
 beforeEach(() => {
-  AWSMock.setSDKInstance(AWS);
+  // Fix: https://github.com/dwyl/aws-sdk-mock/issues/145
+  AWSMock.setSDK(path.resolve(__dirname, "../../node_modules/aws-sdk"));
 });
 
 afterEach(() => {

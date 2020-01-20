@@ -1,6 +1,6 @@
 import path from "path";
 import * as AWSMock from "aws-sdk-mock";
-import generate from "../../../lib/commands/generate";
+import remove from "../../../lib/commands/remove";
 import * as sendResponse from "../../../lib/commands/sendResponse";
 import { domain, email } from "../../../lib/env";
 import { Commands } from "../../../lib/reserved";
@@ -19,12 +19,12 @@ afterEach(() => {
   AWSMock.restore();
 });
 
-it("should store the alias-source record and send a response email for a successful outcome", async () => {
+it("should delete the provided alias", async () => {
   const mockDocumentClient = jest.fn();
 
   AWSMock.mock(
     "DynamoDB.DocumentClient",
-    "put",
+    "delete",
     (params: any, callback: Callback) => {
       mockDocumentClient(params);
       callback(null, null);
@@ -33,22 +33,21 @@ it("should store the alias-source record and send a response email for a success
 
   const testEmail = await generateTestEmail({
     to: [{ email: "test@domain.com" }],
-    subject: "Some source"
+    subject: "abandonedalias"
   });
 
-  await generate(testEmail);
+  await remove(testEmail);
 
   expect(mockDocumentClient.mock.calls.length).toBe(1);
-  expect(mockDocumentClient.mock.calls[0][0].Item).toStrictEqual({
-    alias: "fakeid",
-    source: "Some source"
+  expect(mockDocumentClient.mock.calls[0][0].Key).toStrictEqual({
+    alias: "abandonedalias"
   });
 
   expect(sendResponse.default).toHaveBeenCalledTimes(1);
   expect(sendResponse.default).toHaveBeenCalledWith(
-    `${Commands.Generate}@${domain}`,
+    `${Commands.Remove}@${domain}`,
     email,
-    "Generated alias: fakeid",
-    `You have generated fakeid@${domain} for "Some source".`
+    "Delete alias abandonedalias",
+    "Deletion completed."
   );
 });

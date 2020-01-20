@@ -1,32 +1,7 @@
-import { DynamoDB, SESV2 } from "aws-sdk";
+import { DynamoDB } from "aws-sdk";
 import { domain, email } from "../env";
 import { Commands } from "../reserved";
-
-const respond = async (body: string): Promise<void> => {
-  console.log("Attempting to send response email");
-  const ses = new SESV2();
-  const sesParams: SESV2.SendEmailRequest = {
-    FromEmailAddress: `${Commands.List}@${domain}`,
-    Destination: {
-      ToAddresses: [email]
-    },
-    Content: {
-      Simple: {
-        Subject: {
-          Data: `Alias list (${new Date()})`
-        },
-        Body: {
-          Text: {
-            Data: body
-          }
-        }
-      }
-    }
-  };
-
-  await ses.sendEmail(sesParams).promise();
-  console.log("Successfully sent response email");
-};
+import sendResponse from "./sendResponse";
 
 export default async (): Promise<void> => {
   const docClient = new DynamoDB.DocumentClient();
@@ -41,7 +16,12 @@ export default async (): Promise<void> => {
   console.log("Successfully scanned database for records");
 
   if (records.Items && records.Items.length === 0) {
-    return await respond("No aliases found.");
+    return await sendResponse(
+      `${Commands.List}@${domain}`,
+      email,
+      `Alias list (${new Date()})`,
+      "No aliases found."
+    );
   }
 
   let mightHaveMoreRecords = false;
@@ -75,5 +55,10 @@ export default async (): Promise<void> => {
       "The database contains malformed records. Check the logs and database for more information.";
   }
 
-  await respond(output);
+  await sendResponse(
+    `${Commands.List}@${domain}`,
+    email,
+    `Alias list (${new Date()})`,
+    output
+  );
 };

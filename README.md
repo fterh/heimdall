@@ -8,6 +8,26 @@
 
 1. Populate required environment variables in `.env.sample`, and rename to `.env`.
 
+## Commands
+
+To interact with the service, send a single email to one of the following email addresses.
+
+### Generate an alias
+
+Email `generate@yourverifieddomain.com` with the source as the subject. You will receive the generated alias as a reply.
+
+### List aliases
+
+Email `list@yourverifieddomain.com`. You will receive a list of all aliases as a reply.
+
+### Remove an alias
+
+Email `remove@yourverifieddomain.com` with the alias as the title (case-sensitive). You will receive the operation outcome (success/failure) as a reply.
+
+### Update an alias
+
+Not supported yet.
+
 ## Known Limitations
 
 1. As a MVP, this does not support replying to more than 1 email address.

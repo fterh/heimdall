@@ -1,6 +1,6 @@
 import * as AWSMock from "aws-sdk-mock";
 import * as AWS from "aws-sdk";
-import getEmailSource from "../getEmailSource";
+import getEmailSource from "../../lib/getEmailSource";
 
 type Callback = (err: any, data: any) => void;
 

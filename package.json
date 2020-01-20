@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "lint": "tsc --strict --noEmit && eslint **/*.ts",
+    "lint": "tsc --strict --noEmit && eslint \"**/*.ts\"",
     "test": "AWS_ID=1234567890 DOMAIN=domain.com EMAIL=user@mydomain.com jest --coverage"
   },
   "dependencies": {

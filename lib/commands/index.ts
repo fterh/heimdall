@@ -1,22 +1,27 @@
 import { ParsedMail } from "mailparser";
 
+import { email } from "../env";
 import generate from "./generate";
 import list from "./list";
 import remove from "./remove";
-import reserved, { Commands } from "../reserved";
+import { Commands } from "../reserved";
 
 export default async (command: string, parsedMail: ParsedMail) => {
-  if (!reserved.has(command)) {
-    throw new Error(`"${command}" is not a command`);
+  if (parsedMail.from.value[0].address !== email) {
+    throw new Error(
+      "Command email's sender is inconsistent with environment variable EMAIL. This should never happen."
+    );
   }
 
   try {
     switch (command) {
       case Commands.Generate:
+        console.log("Invoking generate command");
         await generate(parsedMail);
         break;
 
       case Commands.List:
+        console.log("Invoking list command");
         await list();
         break;
 
@@ -25,7 +30,8 @@ export default async (command: string, parsedMail: ParsedMail) => {
         break;
 
       default:
-        break;
+        // This should never happen
+        throw new Error(`"${command}" is not a command`);
     }
   } catch (err) {
     console.error(`An error occurred: ${err}`);

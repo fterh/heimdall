@@ -7,6 +7,7 @@
 ## Setup
 
 1. Populate required environment variables in `.env.sample`, and rename to `.env`.
+   It is important that `EMAIL` matches your personal email exactly.
 
 ## Commands
 
@@ -19,6 +20,8 @@ Email `generate@yourverifieddomain.com` with the source as the subject. You will
 ### List aliases
 
 Email `list@yourverifieddomain.com`. You will receive a list of all aliases as a reply.
+
+Dev note: This reads up to a maximum of 1MB of data (due to AWS's limitations).
 
 ### Remove an alias
 

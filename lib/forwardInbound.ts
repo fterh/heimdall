@@ -14,14 +14,14 @@ export default async (alias: string, parsedMail: ParsedMail): Promise<void> => {
   try {
     const source = await getEmailSource(alias);
     const params: SESV2.SendEmailRequest = {
-      FromEmailAddress: `${alias}@${domain()}`,
+      FromEmailAddress: `${alias}@${domain}`,
       Destination: {
-        ToAddresses: [email()],
+        ToAddresses: [email],
         CcAddresses: [],
         BccAddresses: []
       },
       ReplyToAddresses: [],
-      FeedbackForwardingEmailAddress: email(),
+      FeedbackForwardingEmailAddress: email,
       Content: {
         Simple: {
           Subject: {

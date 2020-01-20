@@ -4,8 +4,8 @@ plugins:
   - serverless-plugin-typescript
 
 custom:
-  bucket: heimdall${file(lib/env.js):awsId}
-  bucketRef: S3BucketHeimdall${file(lib/env.js):awsId}
+  bucket: heimdall${file(lib/env.js):serverless.awsId}
+  bucketRef: S3BucketHeimdall${file(lib/env.js):serverless.awsId}
 
 provider:
   name: aws
@@ -23,8 +23,9 @@ functions:
   incoming:
     handler: functions/receipt.handler
     environment:
-      DOMAIN: ${file(lib/env.js):domain}
-      EMAIL: ${file(lib/env.js):email}
+      AWS_ID: ${file(lib/env.js):serverless.awsId}
+      DOMAIN: ${file(lib/env.js):serverless.domain}
+      EMAIL: ${file(lib/env.js):serverless.email}
     events:
       - s3:
           bucket: ${self:custom.bucket}

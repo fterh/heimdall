@@ -10,6 +10,6 @@ export default (parsed: ParsedMail): Array<string> => {
 
   return recipients
     .map(emailObject => emailObject.address)
-    .filter(emailAddress => emailAddress.includes(`@${domain()}`))
+    .filter(emailAddress => emailAddress.includes(`@${domain}`))
     .map(emailAddress => emailAddress.split("@")[0]);
 };

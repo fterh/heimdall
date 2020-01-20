@@ -1,5 +1,5 @@
-import extractEmailAliases from "../extractEmailAliases";
-import generateTestEmail from "./generateTestEmail";
+import extractEmailAliases from "../../lib/extractEmailAliases";
+import generateTestEmail from "../utils/generateTestEmail";
 
 test("Verified domain email appears singly in `to` header", async () => {
   const email = await generateTestEmail({

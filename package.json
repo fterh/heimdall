@@ -1,12 +1,13 @@
 {
   "scripts": {
-    "lint": "tsc --strict --noEmit && eslint **/*.ts",
+    "lint": "tsc --strict --noEmit && eslint \"**/*.ts\"",
     "test": "AWS_ID=1234567890 DOMAIN=domain.com EMAIL=user@mydomain.com jest --coverage"
   },
   "dependencies": {
     "aws-sdk": "^2.605.0",
     "dotenv": "^8.2.0",
-    "mailparser": "^2.7.7"
+    "mailparser": "^2.7.7",
+    "nanoid": "^2.1.9"
   },
   "devDependencies": {
     "@babel/core": "^7.8.3",
@@ -16,6 +17,7 @@
     "@types/dotenv": "^8.2.0",
     "@types/jest": "^24.9.0",
     "@types/mailparser": "^2.7.0",
+    "@types/nanoid": "^2.1.0",
     "@types/node": "^13.1.7",
     "@typescript-eslint/eslint-plugin": "^2.16.0",
     "@typescript-eslint/parser": "^2.16.0",

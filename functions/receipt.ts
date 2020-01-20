@@ -6,6 +6,8 @@ import { simpleParser } from "mailparser";
 
 import forwardInbound from "../lib/forwardInbound";
 import extractEmailAliases from "../lib/extractEmailAliases";
+import handleCommand from "../lib/commands";
+import reserved from "../lib/reserved";
 
 const s3 = new S3({
   apiVersion: "2006-03-01",
@@ -27,6 +29,11 @@ export const handler = async (event: S3Event) => {
     const data = await s3.getObject(request).promise();
     const email = await simpleParser(data.Body as Buffer);
     const aliases = extractEmailAliases(email);
+
+    // Command emails are handled separately.
+    if (aliases.length == 1 && reserved.has(aliases[0])) {
+      return await handleCommand(aliases[0], email);
+    }
 
     await Promise.all(aliases.map(alias => forwardInbound(alias, email)));
   } catch (Error) {

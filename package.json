@@ -1,7 +1,7 @@
 {
   "scripts": {
     "lint": "tsc --strict --noEmit && eslint \"**/*.ts\"",
-    "test": "AWS_ID=1234567890 DOMAIN=domain.com EMAIL=user@mydomain.com jest"
+    "test": "AWS_ID=1234567890 AWS_SMTP_HOST=smtphost.com AWS_SMTP_PORT=123 AWS_SMTP_USER=smtpuser AWS_SMTP_PASS=smtppass DOMAIN=domain.com EMAIL=user@mydomain.com jest"
   },
   "dependencies": {
     "aws-sdk": "^2.605.0",

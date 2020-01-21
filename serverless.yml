@@ -24,6 +24,10 @@ functions:
     handler: functions/receipt.handler
     environment:
       AWS_ID: ${file(lib/env.js):serverless.awsId}
+      AWS_SMTP_HOST: ${file(lib/env.js):serverless.awsSmtpHost}
+      AWS_SMTP_PORT: ${file(lib/env.js):serverless.awsSmtpPort}
+      AWS_SMTP_USER: ${file(lib/env.js):serverless.awsSmtpUser}
+      AWS_SMTP_PASS: ${file(lib/env.js):serverless.awsSmtpPass}
       DOMAIN: ${file(lib/env.js):serverless.domain}
       EMAIL: ${file(lib/env.js):serverless.email}
     events:

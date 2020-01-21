@@ -23,6 +23,6 @@ export default async (parsedMail: ParsedMail): Promise<void> => {
     from: `${Commands.Remove}@${domain}`,
     to: [email],
     subject: `Delete alias ${providedAlias}`,
-    body: "Deletion completed."
+    text: "Deletion completed."
   });
 };

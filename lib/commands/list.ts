@@ -20,7 +20,7 @@ export default async (): Promise<void> => {
       from: `${Commands.List}@${domain}`,
       to: [email],
       subject: `Alias list (${new Date()})`,
-      body: "No aliases found."
+      text: "No aliases found."
     });
   }
 
@@ -59,6 +59,6 @@ export default async (): Promise<void> => {
     from: `${Commands.List}@${domain}`,
     to: [email],
     subject: `Alias list (${new Date()})`,
-    body: output
+    text: output
   });
 };

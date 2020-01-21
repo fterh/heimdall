@@ -4,10 +4,23 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/8400b327ea3d328c9f5e/maintainability)](https://codeclimate.com/github/fterh/heimdall/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/8400b327ea3d328c9f5e/test_coverage)](https://codeclimate.com/github/fterh/heimdall/test_coverage)
 
+Heimdall is a self-hosted email alias management service.
+I built this to fight spam and also identify companies that disclose my email address to 3rd parties.
+As a self-hosted/managed solution, you have complete control over your data.
+With 3rd party email forwarding services, you are forced to trust a company with your emails.
+
+This has also been a really fun project for me to learn more about AWS and the Serverless framework.
+
 ## Setup
+
+**Pre-requisites:** You need to own a domain and have an AWS account. For reasonable use cases, you should not exceed AWS's free tier.
 
 1. Populate required environment variables in `.env.sample`, and rename to `.env`.
    It is important that `EMAIL` matches your personal email exactly.
+2. `yarn global add serverless`
+3. Set up Serverless, then `serverless deploy`.
+4. Add and verify your domain in AWS Simple Email Service (SES).
+5. Add a receipt rule in SES to trigger your S3 bucket (created in step 3).
 
 ## Commands
 

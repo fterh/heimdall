@@ -3,7 +3,7 @@ import { ParsedMail } from "mailparser";
 import generate from "nanoid/generate";
 import { domain, email } from "../env";
 import { Commands } from "../reserved";
-import sendResponse from "./sendResponse";
+import sendEmail from "../utils/sendEmail";
 
 export default async (parsedMail: ParsedMail): Promise<void> => {
   const source = parsedMail.subject;
@@ -23,10 +23,10 @@ export default async (parsedMail: ParsedMail): Promise<void> => {
   await docClient.put(docParams).promise();
   console.log("Successfully stored alias-source record");
 
-  await sendResponse(
-    `${Commands.Generate}@${domain}`,
-    email,
-    `Generated alias: ${generatedAlias}`,
-    `You have generated ${generatedAlias}@${domain} for "${source}".`
-  );
+  await sendEmail({
+    from: `${Commands.Generate}@${domain}`,
+    to: [email],
+    subject: `Generated alias: ${generatedAlias}`,
+    body: `You have generated ${generatedAlias}@${domain} for "${source}".`
+  });
 };

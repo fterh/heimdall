@@ -1,26 +1,28 @@
 import { SESV2 } from "aws-sdk";
 
-export default async (
-  from: string,
-  to: string,
-  subject: string,
-  body: string
-): Promise<void> => {
+interface SendEmailOptions {
+  from: string;
+  to: Array<string>;
+  subject: string;
+  body: string;
+}
+
+export default async (options: SendEmailOptions): Promise<void> => {
   console.log("Attempting to send response email");
   const ses = new SESV2();
   const sesParams: SESV2.SendEmailRequest = {
-    FromEmailAddress: from,
+    FromEmailAddress: options.from,
     Destination: {
-      ToAddresses: [to]
+      ToAddresses: options.to
     },
     Content: {
       Simple: {
         Subject: {
-          Data: subject
+          Data: options.subject
         },
         Body: {
           Text: {
-            Data: body
+            Data: options.body
           }
         }
       }

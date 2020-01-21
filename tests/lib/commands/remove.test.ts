@@ -1,12 +1,12 @@
 import path from "path";
 import * as AWSMock from "aws-sdk-mock";
 import remove from "../../../lib/commands/remove";
-import * as sendResponse from "../../../lib/commands/sendResponse";
+import * as sendEmail from "../../../lib/utils/sendEmail";
 import { domain, email } from "../../../lib/env";
 import { Commands } from "../../../lib/reserved";
 import generateTestEmail from "../../utils/generateTestEmail";
 
-jest.mock("../../../lib/commands/sendResponse");
+jest.mock("../../../lib/utils/sendEmail");
 
 type Callback = (err: any, data: any) => void;
 
@@ -43,11 +43,11 @@ it("should delete the provided alias", async () => {
     alias: "abandonedalias"
   });
 
-  expect(sendResponse.default).toHaveBeenCalledTimes(1);
-  expect(sendResponse.default).toHaveBeenCalledWith(
-    `${Commands.Remove}@${domain}`,
-    email,
-    "Delete alias abandonedalias",
-    "Deletion completed."
-  );
+  expect(sendEmail.default).toHaveBeenCalledTimes(1);
+  expect(sendEmail.default).toHaveBeenCalledWith({
+    from: `${Commands.Remove}@${domain}`,
+    to: [email],
+    subject: "Delete alias abandonedalias",
+    body: "Deletion completed."
+  });
 });

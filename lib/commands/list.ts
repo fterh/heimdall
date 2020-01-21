@@ -1,7 +1,7 @@
 import { DynamoDB } from "aws-sdk";
 import { domain, email } from "../env";
 import { Commands } from "../reserved";
-import sendResponse from "./sendResponse";
+import sendEmail from "../utils/sendEmail";
 
 export default async (): Promise<void> => {
   const docClient = new DynamoDB.DocumentClient();
@@ -16,12 +16,12 @@ export default async (): Promise<void> => {
   console.log("Successfully scanned database for records");
 
   if (records.Items && records.Items.length === 0) {
-    return await sendResponse(
-      `${Commands.List}@${domain}`,
-      email,
-      `Alias list (${new Date()})`,
-      "No aliases found."
-    );
+    return await sendEmail({
+      from: `${Commands.List}@${domain}`,
+      to: [email],
+      subject: `Alias list (${new Date()})`,
+      body: "No aliases found."
+    });
   }
 
   let mightHaveMoreRecords = false;
@@ -55,10 +55,10 @@ export default async (): Promise<void> => {
       "The database contains malformed records. Check the logs and database for more information.";
   }
 
-  await sendResponse(
-    `${Commands.List}@${domain}`,
-    email,
-    `Alias list (${new Date()})`,
-    output
-  );
+  await sendEmail({
+    from: `${Commands.List}@${domain}`,
+    to: [email],
+    subject: `Alias list (${new Date()})`,
+    body: output
+  });
 };

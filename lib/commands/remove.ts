@@ -2,7 +2,7 @@ import { DynamoDB } from "aws-sdk";
 import { ParsedMail } from "mailparser";
 import { domain, email } from "../env";
 import { Commands } from "../reserved";
-import sendResponse from "./sendResponse";
+import sendEmail from "../utils/sendEmail";
 
 export default async (parsedMail: ParsedMail): Promise<void> => {
   const providedAlias = parsedMail.subject;
@@ -19,10 +19,10 @@ export default async (parsedMail: ParsedMail): Promise<void> => {
   await docClient.delete(params).promise();
   console.log("Deletion successful");
 
-  await sendResponse(
-    `${Commands.Remove}@${domain}`,
-    email,
-    `Delete alias ${providedAlias}`,
-    "Deletion completed."
-  );
+  await sendEmail({
+    from: `${Commands.Remove}@${domain}`,
+    to: [email],
+    subject: `Delete alias ${providedAlias}`,
+    body: "Deletion completed."
+  });
 };

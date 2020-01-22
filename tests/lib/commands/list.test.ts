@@ -2,7 +2,7 @@ import path from "path";
 import * as AWSMock from "aws-sdk-mock";
 import { DynamoDB } from "aws-sdk";
 import list from "../../../lib/commands/list";
-import * as sendEmail from "../../../lib/utils/sendEmail";
+import sendEmail from "../../../lib/utils/sendEmail";
 import { domain, email } from "../../../lib/env";
 import { Commands } from "../../../lib/reserved";
 
@@ -51,17 +51,15 @@ it("should send a response email with a list of alias-source records", async () 
 
   expect(mockDocumentClient.mock.calls.length).toBe(1);
 
-  expect(sendEmail.default).toHaveBeenCalledTimes(1);
-  expect((sendEmail.default as jest.Mock).mock.calls[0][0].from).toBe(
+  expect(sendEmail).toHaveBeenCalledTimes(1);
+  expect((sendEmail as jest.Mock).mock.calls[0][0].from).toBe(
     `${Commands.List}@${domain}`
   );
-  expect((sendEmail.default as jest.Mock).mock.calls[0][0].to).toStrictEqual([
-    email
-  ]);
-  expect((sendEmail.default as jest.Mock).mock.calls[0][0].subject).toContain(
+  expect((sendEmail as jest.Mock).mock.calls[0][0].to).toStrictEqual([email]);
+  expect((sendEmail as jest.Mock).mock.calls[0][0].subject).toContain(
     "Alias list"
   );
-  expect((sendEmail.default as jest.Mock).mock.calls[0][0].body).toBe(
+  expect((sendEmail as jest.Mock).mock.calls[0][0].text).toBe(
     "Alias : Source\nalias1 : source1\nalias2 : source2\nalias3 : source3\n"
   );
 });
@@ -80,7 +78,7 @@ it("should send a response email indicating no records found", async () => {
 
   await list();
 
-  expect((sendEmail.default as jest.Mock).mock.calls[0][0].body).toBe(
+  expect((sendEmail as jest.Mock).mock.calls[0][0].text).toBe(
     "No aliases found."
   );
 });
@@ -116,7 +114,7 @@ it("should notify user that there might be missing records", async () => {
 
   await list();
 
-  expect((sendEmail.default as jest.Mock).mock.calls[0][0].body).toContain(
+  expect((sendEmail as jest.Mock).mock.calls[0][0].text).toContain(
     "There might be more records in the results set. Check the logs and database for more information."
   );
 });
@@ -151,7 +149,7 @@ it("should notify user that there is malformed data", async () => {
 
   await list();
 
-  expect((sendEmail.default as jest.Mock).mock.calls[0][0].body).toContain(
+  expect((sendEmail as jest.Mock).mock.calls[0][0].text).toContain(
     "The database contains malformed records. Check the logs and database for more information."
   );
 });

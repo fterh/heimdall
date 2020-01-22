@@ -27,6 +27,6 @@ export default async (parsedMail: ParsedMail): Promise<void> => {
     from: `${Commands.Generate}@${domain}`,
     to: [email],
     subject: `Generated alias: ${generatedAlias}`,
-    body: `You have generated ${generatedAlias}@${domain} for "${source}".`
+    text: `You have generated ${generatedAlias}@${domain} for "${source}".`
   });
 };

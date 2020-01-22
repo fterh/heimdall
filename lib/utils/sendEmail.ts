@@ -1,34 +1,35 @@
-import { SESV2 } from "aws-sdk";
+import nodemailer from "nodemailer";
+import Mail from "nodemailer/lib/mailer";
+import { awsSmtpHost, awsSmtpPort, awsSmtpUser, awsSmtpPass } from "../env";
 
-interface SendEmailOptions {
-  from: string;
-  to: Array<string>;
-  subject: string;
-  body: string;
-}
-
-export default async (options: SendEmailOptions): Promise<void> => {
-  console.log("Attempting to send response email");
-  const ses = new SESV2();
-  const sesParams: SESV2.SendEmailRequest = {
-    FromEmailAddress: options.from,
-    Destination: {
-      ToAddresses: options.to
-    },
-    Content: {
-      Simple: {
-        Subject: {
-          Data: options.subject
-        },
-        Body: {
-          Text: {
-            Data: options.body
-          }
-        }
-      }
+export const createTransporter = (): Mail => {
+  return nodemailer.createTransport({
+    host: awsSmtpHost,
+    port: Number(awsSmtpPort),
+    auth: {
+      user: awsSmtpUser,
+      pass: awsSmtpPass
     }
-  };
+  });
+};
 
-  await ses.sendEmail(sesParams).promise();
-  console.log("Successfully sent response email");
+// We do this so we can use dependency injection for testing.
+export const _sendMail = async (
+  transporter: Mail,
+  mailOptions: Mail.Options
+): Promise<any> => {
+  return await transporter.sendMail(mailOptions);
+};
+
+/**
+ * Sends an email using SMTP.
+ * This allows for more advanced use cases,
+ * such as when the SMTP envelope should be different from the email headers.
+ */
+export default async (mailOptions: Mail.Options) => {
+  console.log("Attempting to send email");
+  const transporter = createTransporter();
+  const info = await _sendMail(transporter, mailOptions);
+  console.log("Sucessfully sent email");
+  console.log(info);
 };

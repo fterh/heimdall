@@ -15,12 +15,14 @@ This has also been a really fun project for me to learn more about AWS and the S
 
 **Pre-requisites:** You need to own a domain and have an AWS account. For reasonable use cases, you should not exceed AWS's free tier.
 
-1. Populate required environment variables in `.env.sample`, and rename to `.env`.
+1. Add and verify your domain in AWS Simple Email Service (SES).
+2. In AWS's SES console, generate a set of SMTP credentials.
+   Take note of that, and also your connection information on SES's "SMTP Settings" page.
+3. Populate required environment variables in `.env.sample`, and rename to `.env`.
    It is important that `EMAIL` matches your personal email exactly.
-2. `yarn global add serverless`
-3. Set up Serverless, then `serverless deploy`.
-4. Add and verify your domain in AWS Simple Email Service (SES).
-5. Add a receipt rule in SES to trigger your S3 bucket (created in step 3).
+4. `yarn global add serverless`
+5. Set up Serverless, then `serverless deploy`.
+6. Add a receipt rule in SES to trigger your S3 bucket (created in step 3).
 
 ## Commands
 

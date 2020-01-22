@@ -1,7 +1,7 @@
 import path from "path";
 import * as AWSMock from "aws-sdk-mock";
 import generate from "../../../lib/commands/generate";
-import * as sendEmail from "../../../lib/utils/sendEmail";
+import sendEmail from "../../../lib/utils/sendEmail";
 import { domain, email } from "../../../lib/env";
 import { Commands } from "../../../lib/reserved";
 import generateTestEmail from "../../utils/generateTestEmail";
@@ -44,11 +44,11 @@ it("should store the alias-source record and send a response email for a success
     source: "Some source"
   });
 
-  expect(sendEmail.default).toHaveBeenCalledTimes(1);
-  expect(sendEmail.default).toHaveBeenCalledWith({
+  expect(sendEmail).toHaveBeenCalledTimes(1);
+  expect(sendEmail).toHaveBeenCalledWith({
     from: `${Commands.Generate}@${domain}`,
     to: [email],
     subject: "Generated alias: fakeid",
-    body: `You have generated fakeid@${domain} for "Some source".`
+    text: `You have generated fakeid@${domain} for "Some source".`
   });
 });

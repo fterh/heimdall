@@ -1,11 +1,12 @@
 import { email as myEmail, domain } from "../../lib/env";
 import forwardInbound, {
-  preprocessToAndCcRecipients,
+  generateReplyTo,
   repackageSenderEmailAddress
 } from "../../lib/forwardInbound";
-import sendEmail from "../../lib/utils/sendEmail";
-import generateTestEmail, { EMLFormatData } from "../utils/generateTestEmail";
 import * as getEmailSource from "../../lib/getEmailSource";
+import sendEmail from "../../lib/utils/sendEmail";
+import senderAddressEncodeDecode from "../../lib/utils/senderAddressEncodeDecode";
+import generateTestEmail, { EMLFormatData } from "../utils/generateTestEmail";
 
 jest.mock("../../lib/utils/sendEmail");
 jest
@@ -45,6 +46,7 @@ const testEmailData2: EMLFormatData = {
   html: "Test body text"
 };
 
+// This is a general integration test of the entire module
 it("should forward received email to personal email address", async () => {
   const testEmail1 = await generateTestEmail(testEmailData1);
   const testEmail2 = await generateTestEmail(testEmailData2);
@@ -57,8 +59,9 @@ it("should forward received email to personal email address", async () => {
   });
 
   const _sendEmail = sendEmail as jest.Mock<any, any>;
+
   const expectedEnvelope = {
-    from: `${testAlias}@${domain}`,
+    from: aliasEmail,
     to: myEmail
   };
 
@@ -78,31 +81,42 @@ it("should forward received email to personal email address", async () => {
   expect(_sendEmail.mock.calls[2][0].envelope).toStrictEqual(expectedEnvelope);
 });
 
-it(`should replace alias with personal email address in the "to" and "cc" headers`, async () => {
-  let toRecipients, ccRecipients;
-
-  const testEmail1 = await generateTestEmail(testEmailData1);
-  [toRecipients, ccRecipients] = preprocessToAndCcRecipients(testEmail1);
-  expect(toRecipients).toStrictEqual([{ name: "", address: aliasEmail }]);
-  expect(ccRecipients).toStrictEqual([
-    {
-      name: "Person 2",
-      address: "person2@domain.com"
-    }
-  ]);
-
-  const testEmail2 = await generateTestEmail(testEmailData2);
-  [toRecipients, ccRecipients] = preprocessToAndCcRecipients(testEmail2);
-  expect(toRecipients).toStrictEqual([
-    {
-      name: "Recipient Name",
-      address: "notme@domain.com"
-    }
-  ]);
-  expect(ccRecipients).toStrictEqual([{ name: "", address: aliasEmail }]);
+it(`should generate a "reply-to" header using the "from" header`, async () => {
+  const testEmail = await generateTestEmail(testEmailData1);
+  const res = generateReplyTo(testAlias, testEmail);
+  expect(res).toStrictEqual({
+    name: "sender@domain.com",
+    address: senderAddressEncodeDecode.encodeEmailAddress(
+      testAlias,
+      "sender@domain.com"
+    )
+  });
 });
 
-it("should repackage original sender's name and email into current sender's name", () => {
+it(`should prioritize the "reply-to" header over the "from" header`, async () => {
+  const testEmail = await generateTestEmail(testEmailData1);
+  // Hackish way to insert "reply-to" header information
+  testEmail.replyTo = {
+    text: "",
+    html: "",
+    value: [
+      {
+        address: "someoneelse@domain.com",
+        name: "Someone Else"
+      }
+    ]
+  };
+  const res = generateReplyTo(testAlias, testEmail);
+  expect(res).toStrictEqual({
+    name: "someoneelse@domain.com",
+    address: senderAddressEncodeDecode.encodeEmailAddress(
+      testAlias,
+      "someoneelse@domain.com"
+    )
+  });
+});
+
+it("should repackage original sender's name and email into current sender's email address", () => {
   const repackaged = repackageSenderEmailAddress(testAlias, [
     { name: "John Smith", address: "johnsmith@domain.com" }
   ]);

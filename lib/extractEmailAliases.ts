@@ -1,3 +1,4 @@
+import addrs from "email-addresses";
 import { ParsedMail } from "mailparser";
 import { domain } from "./env";
 
@@ -11,5 +12,8 @@ export default (parsed: ParsedMail): Array<string> => {
   return recipients
     .map(emailObject => emailObject.address)
     .filter(emailAddress => emailAddress.includes(`@${domain}`))
-    .map(emailAddress => emailAddress.split("@")[0]);
+    .map(emailAddress => {
+      const parsed = addrs.parseOneAddress(emailAddress) as addrs.ParsedMailbox;
+      return parsed.local;
+    });
 };

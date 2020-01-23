@@ -48,8 +48,9 @@ Not supported yet.
 
 ## Known Limitations
 
-1. As a MVP, this does not support replying to more than 1 email address.
-   E.g. if A sends an email to alias1@domain1.com which gets forwarded to you@domain2.com while CC-ing
-   B and C, replying to that email will only send the response to A (but not B and C).
+1. Original CC recipients will not be CC-ed in the reply.
+   For example, if A sends an email to alias1@mydomain.com which gets forwarded to you@personalemail.com while CC-ing
+   B and C, replying to that email will only reply A (but not B and C).
+   Manually including B and C in your reply email will disclose your personal email address to B and C.
 
 2. Currently, attachments are not supported.

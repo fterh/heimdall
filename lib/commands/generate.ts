@@ -7,7 +7,7 @@ import sendEmail from "../utils/sendEmail";
 
 export default async (parsedMail: ParsedMail): Promise<void> => {
   const source = parsedMail.subject;
-  const generatedAlias = generate("0123456789abcdefghijklmnopqrstuvwxyz", 13);
+  const generatedAlias = generate("0123456789abcdefghijklmnopqrstuvwxyz", 13); // It is important there are no "+" symbols here
   console.log(`Generated alias=${generatedAlias} for source=${source}`);
 
   console.log("Attempting to store alias-source record");

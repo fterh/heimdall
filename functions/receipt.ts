@@ -4,7 +4,7 @@ import { S3 } from "aws-sdk";
 import { S3Event } from "aws-lambda";
 import { simpleParser, ParsedMail } from "mailparser";
 
-import forwardInbound from "../lib/forwardInbound";
+import forwardIOB from "../lib/forwardInboundOrOutbound";
 import extractEmailAliases from "../lib/extractEmailAliases";
 import handleCommand from "../lib/commands";
 import reserved from "../lib/reserved";
@@ -19,12 +19,12 @@ export const handleAliases = async (
   aliases: Array<string>,
   parsedEmail: ParsedMail
 ): Promise<void> => {
-  // Command emails are handled separately.
+  // Handle commands separately
   if (aliases.length == 1 && reserved.has(aliases[0])) {
     return await handleCommand(aliases[0], parsedEmail);
   }
 
-  await Promise.all(aliases.map(alias => forwardInbound(alias, parsedEmail)));
+  await Promise.all(aliases.map(alias => forwardIOB(alias, parsedEmail)));
 };
 
 export const handler = async (event: S3Event) => {

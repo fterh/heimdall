@@ -3,13 +3,18 @@ import Mail from "nodemailer/lib/mailer";
 import { domain, email as personalEmail } from "./env";
 import getEmailSource from "./getEmailSource";
 import sendEmail from "./utils/sendEmail";
+import senderAddressEncodeDecode from "./utils/senderAddressEncodeDecode";
 
+/**
+ * Generates "from" header information
+ * that encapsulates original sender's name and email address.
+ */
 export const repackageSenderEmailAddress = (
   alias: string,
   sender: Array<EmailAddress>
 ): EmailAddress => {
-  const senderName = sender.length > 0 ? sender[0].name : "Unspecified";
-  const senderAddress = sender.length > 0 ? sender[0].address : "Unspecified";
+  const senderName = sender.length > 0 ? sender[0].name : "";
+  const senderAddress = sender.length > 0 ? sender[0].address : "";
 
   return {
     address: `${alias}@${domain}`,
@@ -17,21 +22,32 @@ export const repackageSenderEmailAddress = (
   };
 };
 
-export const preprocessToAndCcRecipients = (
+/**
+ * Generates "reply-to" header information
+ * that encapsualtes original sender's email address.
+ *
+ * Prioritizes original email's "reply-to" header over "from" header.
+ */
+export const generateReplyTo = (
+  alias: string,
   parsedMail: ParsedMail
-): Array<Array<Mail.Address>> => {
-  // We iterate through the "to" and "cc" list,
-  // repack the data in a new structure (nodemailer-compatible),
-  // and replace our alias identity with our personal email address.
+): Mail.Address => {
+  let replyToEmailAddress = "";
 
-  const mapper = (email: EmailAddress) => {
-    return { name: email.name, address: email.address };
+  // "reply-to" takes precedence over "from" header
+  if (parsedMail.replyTo && parsedMail.replyTo.value.length > 0) {
+    replyToEmailAddress = parsedMail.replyTo.value[0].address;
+  } else {
+    replyToEmailAddress = parsedMail.from.value[0].address; // Guaranteed to exist
+  }
+
+  return {
+    name: replyToEmailAddress,
+    address: senderAddressEncodeDecode.encodeEmailAddress(
+      alias,
+      replyToEmailAddress
+    )
   };
-
-  const toRecipients = parsedMail.to.value.map(mapper);
-  const ccRecipients = parsedMail.cc?.value.map(mapper) || [];
-
-  return [toRecipients, ccRecipients];
 };
 
 /**
@@ -41,32 +57,26 @@ export const preprocessToAndCcRecipients = (
 export default async (alias: string, parsedMail: ParsedMail): Promise<void> => {
   console.log("Attempting to forward received email to personal email");
 
-  try {
-    const source = await getEmailSource(alias);
+  const source = await getEmailSource(alias);
 
-    const from = repackageSenderEmailAddress(alias, parsedMail.from.value);
-    const [toRecipients, ccRecipients] = preprocessToAndCcRecipients(
-      parsedMail
-    );
+  const from = repackageSenderEmailAddress(alias, parsedMail.from.value);
 
-    const mailOptions: Mail.Options = {
-      from,
-      to: toRecipients,
-      cc: ccRecipients,
-      subject: `[Source: ${source}] ${parsedMail.subject}`,
-      html:
-        parsedMail.html !== false
-          ? (parsedMail.html as string) // Will never be `true`
-          : parsedMail.textAsHtml,
-      envelope: {
-        from: from.address,
-        to: personalEmail
-      }
-    };
+  const mailOptions: Mail.Options = {
+    from,
+    to: parsedMail.to.value,
+    cc: parsedMail.cc?.value,
+    replyTo: generateReplyTo(alias, parsedMail),
+    subject: `[Source: ${source}] ${parsedMail.subject}`,
+    html:
+      parsedMail.html !== false
+        ? (parsedMail.html as string) // Will never be `true`
+        : parsedMail.textAsHtml,
+    envelope: {
+      from: from.address, // For semantics only; this has no significance
+      to: personalEmail
+    }
+  };
 
-    await sendEmail(mailOptions);
-    console.log("Successfully forwarded email to personal email");
-  } catch (err) {
-    console.error(`An error occurred: ${err}`);
-  }
+  await sendEmail(mailOptions);
+  console.log("Successfully forwarded email to personal email");
 };

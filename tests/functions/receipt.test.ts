@@ -1,21 +1,29 @@
+import { ParsedMail } from "mailparser";
 import { handleAliases } from "../../functions/receipt";
-import * as handleCommand from "../../lib/commands";
-import * as forwardInbound from "../../lib/forwardInbound";
+import handleCommand from "../../lib/commands";
+import forwardIOB from "../../lib/forwardInboundOrOutbound";
 import generateTestEmail from "../utils/generateTestEmail";
 
 jest.mock("../../lib/commands");
-jest.mock("../../lib/forwardInbound");
+jest.mock("../../lib/forwardInboundOrOutbound");
 
-it("should handle commands by passing them to the commands module", async () => {
-  const testEmail = await generateTestEmail({
+let testEmail: ParsedMail;
+beforeAll(async () => {
+  testEmail = await generateTestEmail({
     to: [{ email: "doesnotmatter@domain.com" }]
   });
+});
 
+it("should handle commands by passing them to the commands module", async () => {
   await handleAliases(["generate"], testEmail);
   await handleAliases(["list"], testEmail);
   await handleAliases(["remove"], testEmail);
-  await handleAliases(["alias"], testEmail);
 
-  expect(handleCommand.default).toHaveBeenCalledTimes(3);
-  expect(forwardInbound.default).toHaveBeenCalledTimes(1);
+  expect(handleCommand).toHaveBeenCalledTimes(3);
+});
+
+it("should handle non-commands by delegating to the forwardInboundOrOutbound module", async () => {
+  await handleAliases(["someAlias"], testEmail);
+
+  expect(forwardIOB).toHaveBeenCalledTimes(1);
 });

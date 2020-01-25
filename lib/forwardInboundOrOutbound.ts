@@ -11,7 +11,7 @@ import forwardOutbound from "./forwardOutbound";
  * Decision is based ONLY on the "from" email address.
  */
 export default async (alias: string, parsedMail: ParsedMail): Promise<void> => {
-  if (parsedMail.from.value[0].address == email) {
+  if (parsedMail.from.value[0].address === email) {
     await forwardOutbound(alias, parsedMail);
   } else {
     await forwardInbound(alias, parsedMail);

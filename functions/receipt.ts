@@ -20,7 +20,7 @@ export const handleAliases = async (
   parsedEmail: ParsedMail
 ): Promise<void> => {
   // Handle commands separately
-  if (aliases.length == 1 && reserved.has(aliases[0])) {
+  if (aliases.length === 1 && reserved.has(aliases[0])) {
     return await handleCommand(aliases[0], parsedEmail);
   }
 

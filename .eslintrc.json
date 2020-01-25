@@ -25,6 +25,7 @@
       "warn",
       { "ignoreArgsIfArgsAfterAreUsed": true }
     ],
-    "prettier/prettier": "error"
+    "prettier/prettier": "error",
+    "eqeqeq": ["error", "smart"]
   }
 }

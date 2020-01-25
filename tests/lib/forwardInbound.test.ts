@@ -1,8 +1,5 @@
 import { email as myEmail, domain } from "../../lib/env";
-import forwardInbound, {
-  generateReplyTo,
-  repackageSenderEmailAddress
-} from "../../lib/forwardInbound";
+import forwardInbound, { generateFromHeader } from "../../lib/forwardInbound";
 import * as getEmailSource from "../../lib/getEmailSource";
 import sendEmail from "../../lib/utils/sendEmail";
 import senderAddressEncodeDecode from "../../lib/utils/senderAddressEncodeDecode";
@@ -12,6 +9,8 @@ jest.mock("../../lib/utils/sendEmail");
 jest
   .spyOn(getEmailSource, "default")
   .mockImplementation(async () => "test source");
+
+const _sendEmail = sendEmail as jest.Mock<any, any>;
 
 const testAlias = "testAlias";
 const aliasEmail = `${testAlias}@${domain}`;
@@ -58,8 +57,6 @@ it("should forward received email to personal email address", async () => {
     text: testEmailData1.text
   });
 
-  const _sendEmail = sendEmail as jest.Mock<any, any>;
-
   const expectedEnvelope = {
     from: aliasEmail,
     to: myEmail
@@ -81,19 +78,24 @@ it("should forward received email to personal email address", async () => {
   expect(_sendEmail.mock.calls[2][0].envelope).toStrictEqual(expectedEnvelope);
 });
 
-it(`should generate a "reply-to" header using the "from" header`, async () => {
+it(`should encode the original sender's email address in the "from" header of the forwarded email`, async () => {
   const testEmail = await generateTestEmail(testEmailData1);
-  const res = generateReplyTo(testAlias, testEmail);
-  expect(res).toStrictEqual({
-    name: "sender@domain.com",
-    address: senderAddressEncodeDecode.encodeEmailAddress(
-      testAlias,
-      "sender@domain.com"
-    )
-  });
+  // const res = generateReplyTo(testAlias, testEmail);
+  // expect(res).toStrictEqual({
+  //   name: "sender@domain.com",
+  //   address: senderAddressEncodeDecode.encodeEmailAddress(
+  //     testAlias,
+  //     "sender@domain.com"
+  //   )
+  // });
+
+  await forwardInbound(testAlias, testEmail);
+  expect(_sendEmail.mock.calls[0][0].from.address).toBe(
+    senderAddressEncodeDecode.encodeEmailAddress(testAlias, "sender@domain.com")
+  );
 });
 
-it(`should prioritize the "reply-to" header over the "from" header`, async () => {
+it(`should prioritize the "reply-to" header over the "from" header in the original received email`, async () => {
   const testEmail = await generateTestEmail(testEmailData1);
   // Hackish way to insert "reply-to" header information
   testEmail.replyTo = {
@@ -106,23 +108,12 @@ it(`should prioritize the "reply-to" header over the "from" header`, async () =>
       }
     ]
   };
-  const res = generateReplyTo(testAlias, testEmail);
+  const res = generateFromHeader(testAlias, testEmail);
   expect(res).toStrictEqual({
-    name: "someoneelse@domain.com",
+    name: "Someone Else <someoneelse@domain.com>",
     address: senderAddressEncodeDecode.encodeEmailAddress(
       testAlias,
       "someoneelse@domain.com"
     )
-  });
-});
-
-it("should repackage original sender's name and email into current sender's email address", () => {
-  const repackaged = repackageSenderEmailAddress(testAlias, [
-    { name: "John Smith", address: "johnsmith@domain.com" }
-  ]);
-
-  expect(repackaged).toStrictEqual({
-    name: "John Smith <johnsmith@domain.com>",
-    address: aliasEmail
   });
 });

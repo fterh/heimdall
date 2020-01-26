@@ -31,34 +31,29 @@ export const decomposeUnpureAlias = (
   };
 };
 
-/**
- * Using the received email headers, generate a new list of "to" recipients
- * by substituting unpure alias for original sender's email address where it appears.
- */
-export const generateToRecipients = (
+export const generateOriginalSenderEmailAddress = (
   unpureAlias: string,
   originalToRecipients: Array<EmailAddress>
-): Array<EmailAddress> => {
+): EmailAddress => {
   const decomposed = decomposeUnpureAlias(unpureAlias);
   let aliasIsMissing = true;
 
-  const newToRecipients: Array<EmailAddress> = originalToRecipients.map(
-    recipient => {
-      const parsed = addrs.parseOneAddress(
-        recipient.address
-      ) as addrs.ParsedMailbox;
-
-      if (parsed.local === unpureAlias) {
-        aliasIsMissing = false;
-        return {
-          name: "",
-          address: decomposed.senderAddress
-        };
-      } else {
-        return recipient;
-      }
-    }
-  );
+  const newToRecipients: Array<EmailAddress> = originalToRecipients
+    // Convert into parsed objects
+    .map(
+      recipient =>
+        addrs.parseOneAddress(recipient.address) as addrs.ParsedMailbox
+    )
+    // Remove all other recipients except for (unpure) alias
+    .filter(parsedRecipient => parsedRecipient.local === unpureAlias)
+    // Generate original sender's email address object
+    .map(() => {
+      aliasIsMissing = false;
+      return {
+        name: "",
+        address: decomposed.senderAddress
+      };
+    });
 
   if (aliasIsMissing) {
     throw new Error(
@@ -66,7 +61,7 @@ export const generateToRecipients = (
     );
   }
 
-  return newToRecipients;
+  return newToRecipients[0];
 };
 
 // unpureAlias is likely in the format "originalAlias+base64EncodedData",
@@ -74,13 +69,15 @@ export const generateToRecipients = (
 export default async (unpureAlias: string, parsedMail: ParsedMail) => {
   console.log("Attempting to forward received email to personal email");
 
-  const toRecipients = generateToRecipients(unpureAlias, parsedMail.to.value);
+  const originalSender = generateOriginalSenderEmailAddress(
+    unpureAlias,
+    parsedMail.to.value
+  );
   const pureAlias = decomposeUnpureAlias(unpureAlias).pureAlias;
 
   const mailOptions: Mail.Options = {
     from: `${pureAlias}@${domain}`,
-    to: toRecipients,
-    cc: parsedMail.cc?.value,
+    to: originalSender,
     subject: parsedMail.subject,
     html:
       parsedMail.html !== false

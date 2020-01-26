@@ -4,7 +4,7 @@ import sendEmail from "../../lib/utils/sendEmail";
 import senderAddressEncodeDecode from "../../lib/utils/senderAddressEncodeDecode";
 import forwardOutbound, {
   decomposeUnpureAlias,
-  generateToRecipients
+  generateOriginalSenderEmailAddress
 } from "../../lib/forwardOutbound";
 import generateTestEmail from "../utils/generateTestEmail";
 
@@ -36,12 +36,10 @@ it("should send outbound email from alias to original sender", async () => {
   expect(sendEmail).toHaveBeenCalledTimes(1);
   expect(sendEmail).toHaveBeenCalledWith({
     from: aliasEmailAddress,
-    to: [
-      {
-        name: "",
-        address: senderEmailAddress
-      }
-    ],
+    to: {
+      name: "",
+      address: senderEmailAddress
+    },
     cc: undefined,
     subject: "Test subject",
     html: "Test html\n"
@@ -60,7 +58,7 @@ it("should throw if original sender address is missing", () => {
   );
 });
 
-it("should replace alias with original sender address", () => {
+it("should only generate original sender's email address", () => {
   const emails: Array<EmailAddress> = [
     { name: "Recipient 1", address: "recipient1@domain.com" },
     { name: "Recipient 2", address: "recipient2@domain.com" },
@@ -74,25 +72,64 @@ it("should replace alias with original sender address", () => {
     { name: "Recipient 3", address: "recipient3@domain.com" }
   ];
 
-  const generatedToRecipients = generateToRecipients(
+  const generatedRecipient = generateOriginalSenderEmailAddress(
     senderAddressEncodeDecode.encodeUnpureAlias(testAlias, senderEmailAddress),
     emails
   );
 
-  expect(generatedToRecipients).toStrictEqual([
-    { name: "Recipient 1", address: "recipient1@domain.com" },
-    { name: "Recipient 2", address: "recipient2@domain.com" },
-    {
+  expect(generatedRecipient).toStrictEqual({
+    name: "",
+    address: senderEmailAddress
+  });
+});
+
+it(`should discard all other recipients on the "to" and "cc" header lists`, async () => {
+  const testEmail = await generateTestEmail({
+    from: "personalemail@personaldomain.com",
+    to: [
+      {
+        name: `Original Sender <${senderEmailAddress}>`,
+        email: senderAddressEncodeDecode.encodeEmailAddress(
+          testAlias,
+          senderEmailAddress
+        )
+      },
+      {
+        name: "Someone Else",
+        email: "someoneelse@someotherdomain.com"
+      }
+    ],
+    cc: [
+      "ccrecipient1@someotherdomain.com",
+      "ccrecipient2@someotherdomain.com"
+    ],
+    subject: "Test subject",
+    html: "Test html"
+  });
+
+  await forwardOutbound(
+    senderAddressEncodeDecode.encodeUnpureAlias(testAlias, senderEmailAddress),
+    testEmail
+  );
+
+  expect(sendEmail).toHaveBeenCalledTimes(1);
+  expect(sendEmail).toHaveBeenCalledWith({
+    from: aliasEmailAddress,
+    to: {
       name: "",
       address: senderEmailAddress
     },
-    { name: "Recipient 3", address: "recipient3@domain.com" }
-  ]);
+    cc: undefined,
+    subject: "Test subject",
+    html: "Test html\n"
+  });
 });
 
-// This is an edge case when an email is sent to a properly-formatted
-// unpure alias email address but that address is absent in the "to" list.
-// It should only happen in the event of a malicious attack.
+/* Security-related tests */
+
+// This happens when an email is sent to a properly-formatted
+// unpure alias email address (through the SMTP envelope)
+// but that address is absent in the "to" header list.
 it(`should throw if alias is absent in the "to" recipients list`, () => {
   const emails: Array<EmailAddress> = [
     {
@@ -105,7 +142,7 @@ it(`should throw if alias is absent in the "to" recipients list`, () => {
   ];
 
   expect(() => {
-    generateToRecipients(
+    generateOriginalSenderEmailAddress(
       senderAddressEncodeDecode.encodeEmailAddress(
         "testAlias",
         senderEmailAddress

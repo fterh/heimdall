@@ -24,6 +24,24 @@ This has also been a really fun project for me to learn more about AWS and the S
 5. Set up Serverless, then `serverless deploy`.
 6. Add a receipt rule in SES to trigger your S3 bucket (created in step 3).
 
+## Features
+
+### Receiving
+
+To be completed.
+
+### Replying
+
+By default, your replies will be sent to the alias to be forwarded to the original sender.
+Other recipients in the original email will not receive your reply.
+
+You can include other recipients in the "to" and "cc" list,
+either by manually inserting them, or using "reply-all".
+
+If you do that, you will disclose your email address to them.
+The original sender will still not be able to see your email address,
+or these other recipients (provided you reply to the alias).
+
 ## Commands
 
 To interact with the service, send a single email to one of the following email addresses.

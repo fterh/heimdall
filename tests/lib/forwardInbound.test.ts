@@ -1,14 +1,14 @@
 import { email as myEmail, domain } from "../../lib/env";
 import forwardInbound, { generateFromHeader } from "../../lib/forwardInbound";
-import * as getEmailSource from "../../lib/getEmailSource";
+import * as getAliasDescription from "../../lib/getAliasDescription";
 import sendEmail from "../../lib/utils/sendEmail";
 import senderAddressEncodeDecode from "../../lib/utils/senderAddressEncodeDecode";
 import generateTestEmail, { EMLFormatData } from "../utils/generateTestEmail";
 
 jest.mock("../../lib/utils/sendEmail");
 jest
-  .spyOn(getEmailSource, "default")
-  .mockImplementation(async () => "test source");
+  .spyOn(getAliasDescription, "default")
+  .mockImplementation(async () => "test description");
 
 const _sendEmail = sendEmail as jest.Mock<any, any>;
 
@@ -66,7 +66,7 @@ it("should forward received email to personal email address", async () => {
   expect(sendEmail).toHaveBeenCalledTimes(1);
   expect(_sendEmail.mock.calls[0][0].envelope).toStrictEqual(expectedEnvelope);
   expect(_sendEmail.mock.calls[0][0].subject).toBe(
-    "[Source: test source] Test subject"
+    "[test description] Test subject"
   );
 
   await forwardInbound(testAlias, testEmail2);
@@ -80,14 +80,6 @@ it("should forward received email to personal email address", async () => {
 
 it(`should encode the original sender's email address in the "from" header of the forwarded email`, async () => {
   const testEmail = await generateTestEmail(testEmailData1);
-  // const res = generateReplyTo(testAlias, testEmail);
-  // expect(res).toStrictEqual({
-  //   name: "sender@domain.com",
-  //   address: senderAddressEncodeDecode.encodeEmailAddress(
-  //     testAlias,
-  //     "sender@domain.com"
-  //   )
-  // });
 
   await forwardInbound(testAlias, testEmail);
   expect(_sendEmail.mock.calls[0][0].from.address).toBe(

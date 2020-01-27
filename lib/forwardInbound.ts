@@ -1,7 +1,7 @@
 import { ParsedMail } from "mailparser";
 import Mail from "nodemailer/lib/mailer";
 import { domain, email as personalEmail } from "./env";
-import getEmailSource from "./getEmailSource";
+import getAliasDescription from "./getAliasDescription";
 import sendEmail from "./utils/sendEmail";
 import senderAddressEncodeDecode from "./utils/senderAddressEncodeDecode";
 
@@ -44,7 +44,7 @@ export const generateFromHeader = (
 export default async (alias: string, parsedMail: ParsedMail): Promise<void> => {
   console.log("Attempting to forward received email to personal email");
 
-  const source = await getEmailSource(alias);
+  const description = await getAliasDescription(alias);
 
   const from = generateFromHeader(alias, parsedMail);
 
@@ -52,7 +52,7 @@ export default async (alias: string, parsedMail: ParsedMail): Promise<void> => {
     from,
     to: parsedMail.to.value,
     cc: parsedMail.cc?.value,
-    subject: `[Source: ${source}] ${parsedMail.subject}`,
+    subject: `[${description}] ${parsedMail.subject}`,
     html:
       parsedMail.html !== false
         ? (parsedMail.html as string) // Will never be `true`

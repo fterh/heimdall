@@ -19,7 +19,7 @@ afterEach(() => {
   AWSMock.restore();
 });
 
-it("should send a response email with a list of alias-source records", async () => {
+it("should send a response email with a list of alias-description records", async () => {
   const mockDocumentClient = jest.fn();
 
   AWSMock.mock(
@@ -31,15 +31,15 @@ it("should send a response email with a list of alias-source records", async () 
         Items: [
           {
             alias: "alias1",
-            source: "source1"
+            description: "description1"
           },
           {
             alias: "alias2",
-            source: "source2"
+            description: "description2"
           },
           {
             alias: "alias3",
-            source: "source3"
+            description: "description3"
           }
         ]
       };
@@ -60,7 +60,7 @@ it("should send a response email with a list of alias-source records", async () 
     "Alias list"
   );
   expect((sendEmail as jest.Mock).mock.calls[0][0].text).toBe(
-    "Alias : Source\nalias1 : source1\nalias2 : source2\nalias3 : source3\n"
+    "Alias : Description\nalias1 : description1\nalias2 : description2\nalias3 : description3\n"
   );
 });
 
@@ -92,20 +92,20 @@ it("should notify user that there might be missing records", async () => {
         Items: [
           {
             alias: "alias1",
-            source: "source1"
+            description: "description1"
           },
           {
             alias: "alias2",
-            source: "source2"
+            description: "description2"
           },
           {
             alias: "alias3",
-            source: "source3"
+            description: "description3"
           }
         ],
         LastEvaluatedKey: {
           alias: "alias3",
-          source: "source3"
+          description: "description3"
         }
       };
       callback(null, records);
@@ -128,19 +128,19 @@ it("should notify user that there is malformed data", async () => {
         Items: [
           {
             alias: "alias1",
-            source: "source1"
+            description: "description1"
           },
           {
             alias: "alias2"
           },
           {
             alias: "alias3",
-            source: "source3"
+            description: "description3"
           }
         ],
         LastEvaluatedKey: {
           alias: "alias3",
-          source: "source3"
+          description: "description3"
         }
       };
       callback(null, records);

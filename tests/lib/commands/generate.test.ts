@@ -19,7 +19,7 @@ afterEach(() => {
   AWSMock.restore();
 });
 
-it("should store the alias-source record and send a response email for a successful outcome", async () => {
+it("should store the alias-description record and send a response email for a successful outcome", async () => {
   const mockDocumentClient = jest.fn();
 
   AWSMock.mock(
@@ -33,7 +33,7 @@ it("should store the alias-source record and send a response email for a success
 
   const testEmail = await generateTestEmail({
     to: [{ email: "test@domain.com" }],
-    subject: "Some source"
+    subject: "Some description"
   });
 
   await generate(testEmail);
@@ -41,7 +41,7 @@ it("should store the alias-source record and send a response email for a success
   expect(mockDocumentClient.mock.calls.length).toBe(1);
   expect(mockDocumentClient.mock.calls[0][0].Item).toStrictEqual({
     alias: "fakeid",
-    source: "Some source"
+    description: "Some description"
   });
 
   expect(sendEmail).toHaveBeenCalledTimes(1);
@@ -49,6 +49,6 @@ it("should store the alias-source record and send a response email for a success
     from: `${Commands.Generate}@${domain}`,
     to: [email],
     subject: "Generated alias: fakeid",
-    text: `You have generated fakeid@${domain} for "Some source".`
+    text: `You have generated fakeid@${domain} for "Some description".`
   });
 });

@@ -34,15 +34,15 @@ export default async (): Promise<void> => {
     );
   }
 
-  let output = "Alias : Source\n";
+  let output = "Alias : Description\n";
   records.Items?.forEach(item => {
-    if (item.source === undefined) {
+    if (item.description === undefined) {
       hasMalformedRecords = true;
       return console.log(
-        `Record with alias=${item.alias} is missing the "source" attribute. Skipping.`
+        `Record with alias=${item.alias} is missing the "description" attribute. Skipping.`
       );
     }
-    output += `${item.alias} : ${item.source}\n`;
+    output += `${item.alias} : ${item.description}\n`;
   });
 
   if (mightHaveMoreRecords) {

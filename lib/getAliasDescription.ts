@@ -15,9 +15,9 @@ export default async (alias: string): Promise<string> => {
     throw new Error(`Alias=${alias} not found in database!`);
   }
 
-  if (!res.Item.source) {
-    throw new Error(`Alias=${alias} does not have a "source" attribute!`);
+  if (!res.Item.description) {
+    throw new Error(`Alias=${alias} does not have a "description" attribute!`);
   }
 
-  return res.Item.source as string;
+  return res.Item.description as string;
 };

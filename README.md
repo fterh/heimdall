@@ -11,9 +11,19 @@ With 3rd party email forwarding services, you are forced to trust a company with
 
 This has also been a really fun project for me to learn more about AWS and the Serverless framework.
 
+## Why use Heimdall
+Here is a summary of why you should use Heimdall.
+
+1. With Heimdall, you completely own and manage your data and the service. No feature limitations or having to trust a third-party company with your data. 
+2. Heimdall is meant for individual users to deploy and use and contains user-friendly setup instructions.
+3. Heimdall is easy to run - it utilizes the idea of serverless computing, so there is zero server configuration or provisioning.
+3. Heimdall is easy to deploy - it uses the Serverless framework (not to be confused with small-letter serverless in Point 2 above) so you can deploy with a single command.
+
 ## Setup
 
-**Pre-requisites:** You need to own a domain and have an AWS account. For reasonable use cases, you should not exceed AWS's free tier.
+**Pre-requisites:** You need to own a domain and have an AWS account. For reasonable use cases, you should not exceed AWS's free tier (which is very generous).
+
+**Optional:** To be able to reply to emails, you need to request AWS Support to [un-sandbox your SES account](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/request-production-access.html).
 
 1. Add and verify your domain in AWS Simple Email Service (SES).
 2. In AWS's SES console, generate a set of SMTP credentials.
@@ -52,6 +62,10 @@ Email `generate@yourverifieddomain.com` with the description as the subject. You
 
 The description lets you identify an alias and its use. E.g. "Sign up for Service X".
 
+![Screenshot 1](https://cdn-images-1.medium.com/max/800/1*uRgQFrT9orTw9Bx6pT0jIg.png)
+
+![Screenshot 2](https://cdn-images-1.medium.com/max/800/1*nMh7U31-JAIBLdTYLXf7uA.png)
+
 ### List aliases
 
 Email `list@yourverifieddomain.com`. You will receive a list of all aliases as a reply.
@@ -68,9 +82,4 @@ Not supported yet.
 
 ## Known Limitations
 
-1. Original CC recipients will not be CC-ed in the reply.
-   For example, if A sends an email to alias1@mydomain.com which gets forwarded to you@personalemail.com while CC-ing
-   B and C, replying to that email will only reply A (but not B and C).
-   Manually including B and C in your reply email will disclose your personal email address to B and C.
-
-2. Currently, attachments are not supported.
+Currently, attachments are not supported.

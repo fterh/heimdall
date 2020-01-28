@@ -1,6 +1,6 @@
 import { DynamoDB } from "aws-sdk";
 import { domain, email } from "../env";
-import { Commands } from "../reserved";
+import { Commands } from "../commandSet";
 import sendEmail from "../utils/sendEmail";
 
 export default async (): Promise<void> => {

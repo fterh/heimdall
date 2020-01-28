@@ -4,7 +4,7 @@ import { DynamoDB } from "aws-sdk";
 import list from "../../../lib/commands/list";
 import sendEmail from "../../../lib/utils/sendEmail";
 import { domain, email } from "../../../lib/env";
-import { Commands } from "../../../lib/reserved";
+import { Commands } from "../../../lib/commandSet";
 
 jest.mock("../../../lib/utils/sendEmail");
 

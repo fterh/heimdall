@@ -3,7 +3,7 @@ import * as AWSMock from "aws-sdk-mock";
 import generate from "../../../lib/commands/generate";
 import sendEmail from "../../../lib/utils/sendEmail";
 import { domain, email } from "../../../lib/env";
-import { Commands } from "../../../lib/reserved";
+import { Commands } from "../../../lib/commandSet";
 import generateTestEmail from "../../utils/generateTestEmail";
 
 jest.mock("../../../lib/utils/sendEmail");

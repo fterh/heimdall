@@ -4,7 +4,7 @@ import { email } from "../env";
 import generate from "./generate";
 import list from "./list";
 import remove from "./remove";
-import { Commands } from "../reserved";
+import { Commands } from "../commandSet";
 
 export default async (command: string, parsedMail: ParsedMail) => {
   if (parsedMail.from.value[0].address !== email) {

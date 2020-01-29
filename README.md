@@ -4,16 +4,14 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/8400b327ea3d328c9f5e/maintainability)](https://codeclimate.com/github/fterh/heimdall/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/8400b327ea3d328c9f5e/test_coverage)](https://codeclimate.com/github/fterh/heimdall/test_coverage)
 
-Heimdall is a self-hosted email alias management service.
-I built this to fight spam and also identify companies that disclose my email address to 3rd parties.
+Heimdall is a self-hosted email alias/forwarding service.
+I built this as a privacy tool to fight spam and also better manage access to my personal email address.
 As a self-hosted/managed solution, you have complete control over your data.
 With 3rd party email forwarding services, you are forced to trust a company with your emails.
 
 This has also been a really fun project for me to learn more about AWS and the Serverless framework.
 
 ## Why use Heimdall
-Here is a summary of why you should use Heimdall.
-
 1. With Heimdall, you completely own and manage your data and the service. No feature limitations or having to trust a third-party company with your data. 
 2. Heimdall is meant for individual users to deploy and use and contains user-friendly setup instructions.
 3. Heimdall is easy to run - it utilizes the idea of serverless computing, so there is zero server configuration or provisioning.
@@ -38,7 +36,9 @@ Here is a summary of why you should use Heimdall.
 
 ### Receiving
 
-To be completed.
+Emails received on valid aliases will automatially be forwarded to your personal email address.
+Forwarded emails will preserve metadata information, such as any other recipients in the "to" or "CC" headers.
+The email subject will be prepended with the alias description in brackets `[Some description]`.
 
 ### Replying
 

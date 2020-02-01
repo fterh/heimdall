@@ -11,6 +11,8 @@ With 3rd party email forwarding services, you are forced to trust a company with
 
 This has also been a really fun project for me to learn more about AWS and the Serverless framework.
 
+Check out: [How I built Heimdall, an open-source personal email guardian.](https://medium.com/@fabianterh/how-i-built-heimdall-an-open-source-personal-email-guardian-68e306d172d1)
+
 ## Why use Heimdall
 1. With Heimdall, you completely own and manage your data and the service. No feature limitations or having to trust a third-party company with your data. 
 2. Heimdall is meant for individual users to deploy and use and contains user-friendly setup instructions.

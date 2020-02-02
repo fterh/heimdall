@@ -17,7 +17,7 @@ Check out: [How I built Heimdall, an open-source personal email guardian.](https
 1. With Heimdall, you completely own and manage your data and the service. No feature limitations or having to trust a third-party company with your data. 
 2. Heimdall is meant for individual users to deploy and use and contains user-friendly setup instructions.
 3. Heimdall is easy to run - it utilizes the idea of serverless computing, so there is zero server configuration or provisioning.
-3. Heimdall is easy to deploy - it uses the Serverless framework (not to be confused with small-letter serverless in Point 2 above) so you can deploy with a single command.
+4. Heimdall is easy to deploy - it uses the Serverless framework (not to be confused with small-letter serverless in Point 3 above) so you can deploy with a single command.
 
 ## Setup
 

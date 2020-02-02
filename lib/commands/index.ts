@@ -8,7 +8,7 @@ import { Commands } from "../commandSet";
 
 export default async (command: string, parsedMail: ParsedMail) => {
   if (parsedMail.from.value[0].address !== email) {
-    throw new Error(
+    console.warn(
       "Command email's sender is inconsistent with environment variable EMAIL."
     );
   }

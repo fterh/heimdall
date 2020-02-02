@@ -6,6 +6,15 @@ interface Email {
   email: string;
 }
 
+export interface EMLFormatDataAttachment {
+  cid?: string;
+  contentType?: string;
+  data: string | Buffer;
+  filename?: string;
+  inline?: boolean; // Set to false for attachments
+  name?: string;
+}
+
 export interface EMLFormatData {
   from?: Email | string;
   to: Email | Array<Email> | string | Array<string>;
@@ -13,6 +22,7 @@ export interface EMLFormatData {
   subject?: string;
   text?: string;
   html?: string;
+  attachments?: Array<EMLFormatDataAttachment>;
 }
 
 export default async (data: EMLFormatData): Promise<ParsedMail> => {

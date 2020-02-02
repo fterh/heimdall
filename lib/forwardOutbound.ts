@@ -2,6 +2,7 @@ import addrs from "email-addresses";
 import { EmailAddress, ParsedMail } from "mailparser";
 import Mail from "nodemailer/lib/mailer";
 import { domain } from "./env";
+import repackageReceivedAttachments from "./utils/repackageReceivedAttachments";
 import sendEmail from "./utils/sendEmail";
 import senderAddressEncodeDecode from "./utils/senderAddressEncodeDecode";
 
@@ -64,15 +65,15 @@ export const generateOriginalSenderEmailAddress = (
   return newToRecipients[0];
 };
 
-// unpureAlias is likely in the format "originalAlias+base64EncodedData",
-// so we name it unpureAlias to prevent confusion.
-export default async (unpureAlias: string, parsedMail: ParsedMail) => {
-  console.log("Attempting to forward received email to personal email");
-
+export const generateOutboundMailOptions = (
+  unpureAlias: string,
+  parsedMail: ParsedMail
+): Mail.Options => {
   const originalSender = generateOriginalSenderEmailAddress(
     unpureAlias,
     parsedMail.to.value
   );
+
   const pureAlias = decomposeUnpureAlias(unpureAlias).pureAlias;
 
   const mailOptions: Mail.Options = {
@@ -82,9 +83,20 @@ export default async (unpureAlias: string, parsedMail: ParsedMail) => {
     html:
       parsedMail.html !== false
         ? (parsedMail.html as string) // Will never be `true`
-        : parsedMail.textAsHtml
+        : parsedMail.textAsHtml,
+    attachments: repackageReceivedAttachments(parsedMail.attachments)
   };
 
+  return mailOptions;
+};
+
+// unpureAlias is likely in the format "originalAlias+base64EncodedData",
+// so we name it unpureAlias to prevent confusion.
+export default async (unpureAlias: string, parsedMail: ParsedMail) => {
+  console.log("Attempting to forward received email to personal email");
+
+  const mailOptions = generateOutboundMailOptions(unpureAlias, parsedMail);
   await sendEmail(mailOptions);
+
   console.log("Successfully forwarded email to original sender");
 };

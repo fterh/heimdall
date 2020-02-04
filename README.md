@@ -14,7 +14,8 @@ This has also been a really fun project for me to learn more about AWS and the S
 Check out: [How I built Heimdall, an open-source personal email guardian.](https://medium.com/@fabianterh/how-i-built-heimdall-an-open-source-personal-email-guardian-68e306d172d1)
 
 ## Why use Heimdall
-1. With Heimdall, you completely own and manage your data and the service. No feature limitations or having to trust a third-party company with your data. 
+
+1. With Heimdall, you completely own and manage your data and the service. No feature limitations or having to trust a third-party company with your data.
 2. Heimdall is meant for individual users to deploy and use and contains user-friendly setup instructions.
 3. Heimdall is easy to run - it utilizes the idea of serverless computing, so there is zero server configuration or provisioning.
 4. Heimdall is easy to deploy - it uses the Serverless framework (not to be confused with small-letter serverless in Point 3 above) so you can deploy with a single command.
@@ -54,6 +55,11 @@ If you do that, you will disclose your email address to them.
 The original sender will still not be able to see your email address,
 or these other recipients (provided you reply to the alias).
 
+### Attachments
+
+Attachments are supported, although size restrictions apply to the entire email message.
+See Limitations below.
+
 ## Commands
 
 To interact with the service, send a single email to one of the following email addresses.
@@ -84,4 +90,4 @@ Not supported yet.
 
 ## Known Limitations
 
-Currently, attachments are not supported.
+Received emails must be <30MB. Outgoing emails must be <10MB.

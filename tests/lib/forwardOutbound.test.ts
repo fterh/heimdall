@@ -6,7 +6,8 @@ import forwardOutbound, {
   decomposeUnpureAlias,
   generateOriginalSenderEmailAddress
 } from "../../lib/forwardOutbound";
-import generateTestEmail from "../utils/generateTestEmail";
+import assertEquivalentAttachments from "../utils/assertEquivalentAttachments";
+import generateTestEmail, { EMLFormatData } from "../utils/generateTestEmail";
 
 jest.mock("../../lib/utils/sendEmail");
 
@@ -14,19 +15,28 @@ const testAlias = "testAlias";
 const aliasEmailAddress = `testAlias@${domain}`;
 const senderEmailAddress = "originalsender@domain.com";
 
+const testAttachment = {
+  data: "attachment_data_as_string"
+};
+
+const testEmailData1: EMLFormatData = {
+  from: "personalemail@personaldomain.com",
+  to: {
+    name: `Original Sender <${senderEmailAddress}>`,
+    email: senderAddressEncodeDecode.encodeEmailAddress(
+      testAlias,
+      senderEmailAddress
+    )
+  },
+  subject: "Test subject",
+  html: "Test html"
+};
+
+const testEmailData2: EMLFormatData = Object.assign({}, testEmailData1);
+testEmailData2.attachments = [testAttachment];
+
 it("should send outbound email from alias to original sender", async () => {
-  const testEmail = await generateTestEmail({
-    from: "personalemail@personaldomain.com",
-    to: {
-      name: `Original Sender <${senderEmailAddress}>`,
-      email: senderAddressEncodeDecode.encodeEmailAddress(
-        testAlias,
-        senderEmailAddress
-      )
-    },
-    subject: "Test subject",
-    html: "Test html"
-  });
+  const testEmail = await generateTestEmail(testEmailData1);
 
   await forwardOutbound(
     senderAddressEncodeDecode.encodeUnpureAlias(testAlias, senderEmailAddress),
@@ -42,7 +52,8 @@ it("should send outbound email from alias to original sender", async () => {
     },
     cc: undefined,
     subject: "Test subject",
-    html: "Test html\n"
+    html: "Test html\n",
+    attachments: []
   });
 });
 
@@ -121,8 +132,28 @@ it(`should discard all other recipients on the "to" and "cc" header lists`, asyn
     },
     cc: undefined,
     subject: "Test subject",
-    html: "Test html\n"
+    html: "Test html\n",
+    attachments: []
   });
+});
+
+it("should forward attachments to original sender", async () => {
+  const testEmail = await generateTestEmail(testEmailData2);
+
+  await forwardOutbound(
+    senderAddressEncodeDecode.encodeUnpureAlias(testAlias, senderEmailAddress),
+    testEmail
+  );
+
+  const _sendEmail = sendEmail as jest.Mock<any, any>;
+  expect(sendEmail).toHaveBeenCalledTimes(1);
+  expect(_sendEmail.mock.calls[0][0].attachments.length).toBe(1);
+  expect(
+    assertEquivalentAttachments(
+      testEmail.attachments![0],
+      _sendEmail.mock.calls[0][0].attachments[0]
+    )
+  ).toBe(true);
 });
 
 /* Security-related tests */

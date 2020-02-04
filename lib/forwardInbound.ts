@@ -2,6 +2,7 @@ import { ParsedMail } from "mailparser";
 import Mail from "nodemailer/lib/mailer";
 import { domain, email as personalEmail } from "./env";
 import getAliasDescription from "./getAliasDescription";
+import repackageReceivedAttachments from "./utils/repackageReceivedAttachments";
 import sendEmail from "./utils/sendEmail";
 import senderAddressEncodeDecode from "./utils/senderAddressEncodeDecode";
 
@@ -37,22 +38,15 @@ export const generateFromHeader = (
   };
 };
 
-/**
- * Forwards received email to personal email.
- * Preserves metadata while avoiding re-sending to other recipients.
- */
-export default async (alias: string, parsedMail: ParsedMail): Promise<void> => {
-  console.log("Attempting to forward received email to personal email");
-
-  const description = await getAliasDescription(alias);
-
-  const from = generateFromHeader(alias, parsedMail);
-
+export const generateInboundMailOptions = async (
+  alias: string,
+  parsedMail: ParsedMail
+): Promise<Mail.Options> => {
   const mailOptions: Mail.Options = {
-    from,
+    from: generateFromHeader(alias, parsedMail),
     to: parsedMail.to.value,
     cc: parsedMail.cc?.value,
-    subject: `[${description}] ${parsedMail.subject}`,
+    subject: `[${await getAliasDescription(alias)}] ${parsedMail.subject}`,
     html:
       parsedMail.html !== false
         ? (parsedMail.html as string) // Will never be `true`
@@ -60,9 +54,22 @@ export default async (alias: string, parsedMail: ParsedMail): Promise<void> => {
     envelope: {
       from: `${alias}@${domain}`, // For semantics only; this has no significance
       to: personalEmail
-    }
+    },
+    attachments: repackageReceivedAttachments(parsedMail.attachments)
   };
 
+  return mailOptions;
+};
+
+/**
+ * Forwards received email to personal email.
+ * Preserves metadata while avoiding re-sending to other recipients.
+ */
+export default async (alias: string, parsedMail: ParsedMail): Promise<void> => {
+  console.log("Attempting to forward received email to personal email");
+
+  const mailOptions = await generateInboundMailOptions(alias, parsedMail);
   await sendEmail(mailOptions);
+
   console.log("Successfully forwarded email to personal email");
 };

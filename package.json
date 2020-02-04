@@ -7,6 +7,7 @@
     "aws-sdk": "^2.605.0",
     "dotenv": "^8.2.0",
     "email-addresses": "^3.1.0",
+    "fast-deep-equal": "^3.1.1",
     "js-base64": "^2.5.1",
     "mailparser": "^2.7.7",
     "nanoid": "^2.1.9",

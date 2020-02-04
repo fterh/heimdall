@@ -3,6 +3,7 @@ import forwardInbound, { generateFromHeader } from "../../lib/forwardInbound";
 import * as getAliasDescription from "../../lib/getAliasDescription";
 import sendEmail from "../../lib/utils/sendEmail";
 import senderAddressEncodeDecode from "../../lib/utils/senderAddressEncodeDecode";
+import assertEquivalentAttachments from "../utils/assertEquivalentAttachments";
 import generateTestEmail, { EMLFormatData } from "../utils/generateTestEmail";
 
 jest.mock("../../lib/utils/sendEmail");
@@ -14,6 +15,10 @@ const _sendEmail = sendEmail as jest.Mock<any, any>;
 
 const testAlias = "testAlias";
 const aliasEmail = `${testAlias}@${domain}`;
+
+const testAttachment = {
+  data: "attachment_data_as_string"
+};
 
 const testEmailData1: EMLFormatData = {
   from: {
@@ -45,7 +50,17 @@ const testEmailData2: EMLFormatData = {
   html: "Test body text"
 };
 
-// This is a general integration test of the entire module
+const testEmailData3: EMLFormatData = {
+  from: {
+    name: "Sender Name",
+    email: "sender@domain.com"
+  },
+  to: aliasEmail,
+  subject: "Test subject with attachment",
+  html: "Test body text",
+  attachments: [testAttachment]
+};
+
 it("should forward received email to personal email address", async () => {
   const testEmail1 = await generateTestEmail(testEmailData1);
   const testEmail2 = await generateTestEmail(testEmailData2);
@@ -108,4 +123,18 @@ it(`should prioritize the "reply-to" header over the "from" header in the origin
       "someoneelse@domain.com"
     )
   });
+});
+
+it("should forward attachments to personal email address", async () => {
+  const testEmail = await generateTestEmail(testEmailData3);
+
+  await forwardInbound(testAlias, testEmail);
+  expect(sendEmail).toHaveBeenCalledTimes(1);
+  expect(_sendEmail.mock.calls[0][0].attachments.length).toBe(1);
+  expect(
+    assertEquivalentAttachments(
+      testEmail.attachments![0],
+      _sendEmail.mock.calls[0][0].attachments[0]
+    )
+  ).toBe(true);
 });

@@ -39,7 +39,7 @@ Check out: [How I built Heimdall, an open-source personal email guardian.](https
 
 ### Receiving
 
-Emails received on valid aliases will automatially be forwarded to your personal email address.
+Emails received on valid aliases will automatically be forwarded to your personal email address.
 Forwarded emails will preserve metadata information, such as any other recipients in the "to" or "CC" headers.
 The email subject will be prepended with the alias description in brackets `[Some description]`.
 

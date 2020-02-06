@@ -24,6 +24,8 @@ Check out: [How I built Heimdall, an open-source personal email guardian.](https
 
 **Pre-requisites:** You need to own a domain and have an AWS account. For reasonable use cases, you should not exceed AWS's free tier (which is very generous).
 
+### Production
+
 **Optional:** To be able to reply to emails, you need to request AWS Support to [un-sandbox your SES account](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/request-production-access.html).
 
 1. Add and verify your domain in AWS Simple Email Service (SES).
@@ -32,8 +34,23 @@ Check out: [How I built Heimdall, an open-source personal email guardian.](https
 3. Populate required environment variables in `.env.sample`, and rename to `.env`.
    It is important that `EMAIL` matches your personal email exactly.
 4. `yarn global add serverless`
-5. Set up Serverless, then `serverless deploy`.
-6. Add a receipt rule in SES to trigger your S3 bucket (created in step 3).
+5. Set up Serverless, then run `yarn run deploy-prod`.
+6. Add a receipt rule in SES to trigger your S3 bucket (created in step 5).
+   For "recipients", enter your domain name (e.g. `yourverifieddomain.com`).
+   Preferably, name your rule descriptively (e.g. `prod`).
+
+### Development
+
+Run `yarn run deploy-dev`.
+This creates a parallel development CloudFormation stack.
+
+Add a new receipt rule in SES **before your production rule** for **2 actions**:
+Firstly, trigger your development S3 bucket.
+Secondly, "Stop Rule Set".
+For "recipients", enter a test subdomain (e.g. `test.yourverifieddomain.com`).
+Preferably, name your rule descriptively (e.g. `test`).
+
+Note: You might need to update your DNS records for `test.yourverifieddomain.com`.
 
 ## Features
 

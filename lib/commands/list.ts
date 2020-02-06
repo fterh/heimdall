@@ -1,5 +1,5 @@
 import { DynamoDB } from "aws-sdk";
-import { domain, email } from "../env";
+import { email, operationalDomain } from "../env";
 import { Commands } from "../commandSet";
 import sendEmail from "../utils/sendEmail";
 
@@ -17,7 +17,7 @@ export default async (): Promise<void> => {
 
   if (records.Items && records.Items.length === 0) {
     return await sendEmail({
-      from: `${Commands.List}@${domain}`,
+      from: `${Commands.List}@${operationalDomain}`,
       to: [email],
       subject: `Alias list (${new Date()})`,
       text: "No aliases found."
@@ -56,7 +56,7 @@ export default async (): Promise<void> => {
   }
 
   await sendEmail({
-    from: `${Commands.List}@${domain}`,
+    from: `${Commands.List}@${operationalDomain}`,
     to: [email],
     subject: `Alias list (${new Date()})`,
     text: output

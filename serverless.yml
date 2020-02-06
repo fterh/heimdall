@@ -4,12 +4,13 @@ plugins:
   - serverless-plugin-typescript
 
 custom:
-  bucket: heimdall${file(lib/env.js):serverless.awsId}
-  bucketRef: S3BucketHeimdall${file(lib/env.js):serverless.awsId}
+  bucket: heimdall${file(lib/env.js):serverless.stage}${file(lib/env.js):serverless.awsId}
+  bucketRef: S3BucketHeimdall${file(lib/env.js):serverless.stage}${file(lib/env.js):serverless.awsId}
 
 provider:
   name: aws
   runtime: nodejs12.x
+  stage: ${file(lib/env.js):serverless.stage}
   region: us-west-2
   iamRoleStatements:
     - Effect: Allow
@@ -28,8 +29,10 @@ functions:
       AWS_SMTP_PORT: ${file(lib/env.js):serverless.awsSmtpPort}
       AWS_SMTP_USER: ${file(lib/env.js):serverless.awsSmtpUser}
       AWS_SMTP_PASS: ${file(lib/env.js):serverless.awsSmtpPass}
-      DOMAIN: ${file(lib/env.js):serverless.domain}
+      BASE_DOMAIN: ${file(lib/env.js):serverless.baseDomain}
+      DEV_SUBDOMAIN: ${file(lib/env.js):serverless.devSubdomain}
       EMAIL: ${file(lib/env.js):serverless.email}
+      STAGE: ${file(lib/env.js):serverless.stage}
     events:
       - s3:
           bucket: ${self:custom.bucket}
@@ -59,7 +62,7 @@ resources:
     aliases:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: aliases
+        TableName: ${file(lib/config.js):serverless.tableName}
         AttributeDefinitions:
           - AttributeName: alias
             AttributeType: S

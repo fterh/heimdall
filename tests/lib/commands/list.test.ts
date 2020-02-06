@@ -3,7 +3,7 @@ import * as AWSMock from "aws-sdk-mock";
 import { DynamoDB } from "aws-sdk";
 import list from "../../../lib/commands/list";
 import sendEmail from "../../../lib/utils/sendEmail";
-import { domain, email } from "../../../lib/env";
+import { email, operationalDomain } from "../../../lib/env";
 import { Commands } from "../../../lib/commandSet";
 
 jest.mock("../../../lib/utils/sendEmail");
@@ -53,7 +53,7 @@ it("should send a response email with a list of alias-description records", asyn
 
   expect(sendEmail).toHaveBeenCalledTimes(1);
   expect((sendEmail as jest.Mock).mock.calls[0][0].from).toBe(
-    `${Commands.List}@${domain}`
+    `${Commands.List}@${operationalDomain}`
   );
   expect((sendEmail as jest.Mock).mock.calls[0][0].to).toStrictEqual([email]);
   expect((sendEmail as jest.Mock).mock.calls[0][0].subject).toContain(

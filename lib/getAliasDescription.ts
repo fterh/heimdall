@@ -1,10 +1,10 @@
 import { DynamoDB } from "aws-sdk";
-import { tableName } from "./config";
+import config from "./config";
 
 export default async (alias: string): Promise<string> => {
   const docClient = new DynamoDB.DocumentClient();
   const params: DynamoDB.DocumentClient.GetItemInput = {
-    TableName: tableName,
+    TableName: config.tableName,
     Key: {
       alias
     }

@@ -1,7 +1,7 @@
 import { DynamoDB } from "aws-sdk";
 import { ParsedMail } from "mailparser";
 import generate from "nanoid/generate";
-import { domain, email } from "../env";
+import { email, operationalDomain } from "../env";
 import { Commands } from "../commandSet";
 import sendEmail from "../utils/sendEmail";
 
@@ -26,9 +26,9 @@ export default async (parsedMail: ParsedMail): Promise<void> => {
   console.log("Successfully stored alias-description record");
 
   await sendEmail({
-    from: `${Commands.Generate}@${domain}`,
+    from: `${Commands.Generate}@${operationalDomain}`,
     to: [email],
     subject: `Generated alias: ${generatedAlias}`,
-    text: `You have generated ${generatedAlias}@${domain} for "${description}".`
+    text: `You have generated ${generatedAlias}@${operationalDomain} for "${description}".`
   });
 };

@@ -1,4 +1,4 @@
-import { email as myEmail, domain } from "../../lib/env";
+import { email as myEmail, operationalDomain } from "../../lib/env";
 import forwardInbound, { generateFromHeader } from "../../lib/forwardInbound";
 import * as getAliasDescription from "../../lib/getAliasDescription";
 import sendEmail from "../../lib/utils/sendEmail";
@@ -14,7 +14,7 @@ jest
 const _sendEmail = sendEmail as jest.Mock<any, any>;
 
 const testAlias = "testAlias";
-const aliasEmail = `${testAlias}@${domain}`;
+const aliasEmail = `${testAlias}@${operationalDomain}`;
 
 const testAttachment = {
   data: "attachment_data_as_string"

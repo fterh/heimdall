@@ -2,7 +2,7 @@ import path from "path";
 import * as AWSMock from "aws-sdk-mock";
 import remove from "../../../lib/commands/remove";
 import sendEmail from "../../../lib/utils/sendEmail";
-import { domain, email } from "../../../lib/env";
+import { email, operationalDomain } from "../../../lib/env";
 import { Commands } from "../../../lib/commandSet";
 import generateTestEmail from "../../utils/generateTestEmail";
 
@@ -45,7 +45,7 @@ it("should delete the provided alias", async () => {
 
   expect(sendEmail).toHaveBeenCalledTimes(1);
   expect(sendEmail).toHaveBeenCalledWith({
-    from: `${Commands.Remove}@${domain}`,
+    from: `${Commands.Remove}@${operationalDomain}`,
     to: [email],
     subject: "Delete alias abandonedalias",
     text: "Deletion completed."

@@ -1,6 +1,6 @@
 import addrs from "email-addresses";
 import { ParsedMail } from "mailparser";
-import { domain } from "./env";
+import { operationalDomain } from "./env";
 
 /**
  * Extracts and returns all aliases in the "to" and "cc" headers
@@ -11,7 +11,7 @@ export default (parsed: ParsedMail): Array<string> => {
 
   return recipients
     .map(emailObject => emailObject.address)
-    .filter(emailAddress => emailAddress.includes(`@${domain}`))
+    .filter(emailAddress => emailAddress.includes(`@${operationalDomain}`))
     .map(emailAddress => {
       const parsed = addrs.parseOneAddress(emailAddress) as addrs.ParsedMailbox;
       return parsed.local;

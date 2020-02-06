@@ -1,6 +1,6 @@
 import { ParsedMail } from "mailparser";
 import Mail from "nodemailer/lib/mailer";
-import { domain, email as personalEmail } from "./env";
+import { email as personalEmail, operationalDomain } from "./env";
 import getAliasDescription from "./getAliasDescription";
 import repackageReceivedAttachments from "./utils/repackageReceivedAttachments";
 import sendEmail from "./utils/sendEmail";
@@ -52,7 +52,7 @@ export const generateInboundMailOptions = async (
         ? (parsedMail.html as string) // Will never be `true`
         : parsedMail.textAsHtml,
     envelope: {
-      from: `${alias}@${domain}`, // For semantics only; this has no significance
+      from: `${alias}@${operationalDomain}`, // For semantics only; this has no significance
       to: personalEmail
     },
     attachments: repackageReceivedAttachments(parsedMail.attachments)

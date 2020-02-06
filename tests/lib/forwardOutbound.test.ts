@@ -1,5 +1,5 @@
 import { EmailAddress } from "mailparser";
-import { domain } from "../../lib/env";
+import { operationalDomain } from "../../lib/env";
 import sendEmail from "../../lib/utils/sendEmail";
 import senderAddressEncodeDecode from "../../lib/utils/senderAddressEncodeDecode";
 import forwardOutbound, {
@@ -12,7 +12,7 @@ import generateTestEmail, { EMLFormatData } from "../utils/generateTestEmail";
 jest.mock("../../lib/utils/sendEmail");
 
 const testAlias = "testAlias";
-const aliasEmailAddress = `testAlias@${domain}`;
+const aliasEmailAddress = `testAlias@${operationalDomain}`;
 const senderEmailAddress = "originalsender@domain.com";
 
 const testAttachment = {

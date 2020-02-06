@@ -1,7 +1,7 @@
 import addrs from "email-addresses";
 import { EmailAddress, ParsedMail } from "mailparser";
 import Mail from "nodemailer/lib/mailer";
-import { domain } from "./env";
+import { operationalDomain } from "./env";
 import repackageReceivedAttachments from "./utils/repackageReceivedAttachments";
 import sendEmail from "./utils/sendEmail";
 import senderAddressEncodeDecode from "./utils/senderAddressEncodeDecode";
@@ -77,7 +77,7 @@ export const generateOutboundMailOptions = (
   const pureAlias = decomposeUnpureAlias(unpureAlias).pureAlias;
 
   const mailOptions: Mail.Options = {
-    from: `${pureAlias}@${domain}`,
+    from: `${pureAlias}@${operationalDomain}`,
     to: originalSender,
     subject: parsedMail.subject,
     html:

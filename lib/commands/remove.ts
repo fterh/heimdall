@@ -1,6 +1,6 @@
 import { DynamoDB } from "aws-sdk";
 import { ParsedMail } from "mailparser";
-import { domain, email } from "../env";
+import { email, operationalDomain } from "../env";
 import { Commands } from "../commandSet";
 import sendEmail from "../utils/sendEmail";
 
@@ -20,7 +20,7 @@ export default async (parsedMail: ParsedMail): Promise<void> => {
   console.log("Deletion successful");
 
   await sendEmail({
-    from: `${Commands.Remove}@${domain}`,
+    from: `${Commands.Remove}@${operationalDomain}`,
     to: [email],
     subject: `Delete alias ${providedAlias}`,
     text: "Deletion completed."

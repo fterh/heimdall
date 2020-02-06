@@ -1,7 +1,10 @@
 {
   "scripts": {
+    "deploy": "echo \"Use yarn run deploy-dev or yarn run deploy-prod instead\"",
+    "deploy-dev": "serverless deploy",
+    "deploy-prod": "STAGE=prod serverless deploy",
     "lint": "tsc --strict --noEmit && eslint \"**/*.ts\"",
-    "test": "AWS_ID=1234567890 AWS_SMTP_HOST=smtphost.com AWS_SMTP_PORT=123 AWS_SMTP_USER=smtpuser AWS_SMTP_PASS=smtppass DOMAIN=domain.com EMAIL=user@mydomain.com jest"
+    "test": "AWS_ID=1234567890 AWS_SMTP_HOST=smtphost.com AWS_SMTP_PORT=123 AWS_SMTP_USER=smtpuser AWS_SMTP_PASS=smtppass BASE_DOMAIN=domain.com DEV_SUBDOMAIN=yarntest EMAIL=user@mydomain.com jest"
   },
   "dependencies": {
     "aws-sdk": "^2.605.0",

@@ -2,7 +2,7 @@ import path from "path";
 import * as AWSMock from "aws-sdk-mock";
 import generate from "../../../lib/commands/generate";
 import sendEmail from "../../../lib/utils/sendEmail";
-import { domain, email } from "../../../lib/env";
+import { email, operationalDomain } from "../../../lib/env";
 import { Commands } from "../../../lib/commandSet";
 import generateTestEmail from "../../utils/generateTestEmail";
 
@@ -46,9 +46,9 @@ it("should store the alias-description record and send a response email for a su
 
   expect(sendEmail).toHaveBeenCalledTimes(1);
   expect(sendEmail).toHaveBeenCalledWith({
-    from: `${Commands.Generate}@${domain}`,
+    from: `${Commands.Generate}@${operationalDomain}`,
     to: [email],
     subject: "Generated alias: fakeid",
-    text: `You have generated fakeid@${domain} for "Some description".`
+    text: `You have generated fakeid@${operationalDomain} for "Some description".`
   });
 });

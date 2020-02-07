@@ -1,7 +1,7 @@
 import { EmailAddress } from "mailparser";
 import { operationalDomain } from "../../lib/env";
-import sendEmail from "../../lib/utils/sendEmail";
-import senderAddressEncodeDecode from "../../lib/utils/senderAddressEncodeDecode";
+import sendEmail from "../../lib/sendEmail";
+import senderAddressEncodeDecode from "../../lib/senderAddressEncodeDecode";
 import forwardOutbound, {
   decomposeUnpureAlias,
   generateOriginalSenderEmailAddress
@@ -9,7 +9,7 @@ import forwardOutbound, {
 import assertEquivalentAttachments from "../utils/assertEquivalentAttachments";
 import generateTestEmail, { EMLFormatData } from "../utils/generateTestEmail";
 
-jest.mock("../../lib/utils/sendEmail");
+jest.mock("../../lib/sendEmail");
 
 const testAlias = "testAlias";
 const aliasEmailAddress = `testAlias@${operationalDomain}`;

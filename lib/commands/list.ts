@@ -2,7 +2,7 @@ import { DynamoDB } from "aws-sdk";
 import config from "../config";
 import { email, operationalDomain } from "../env";
 import { Commands } from "../commandSet";
-import sendEmail from "../utils/sendEmail";
+import sendEmail from "../sendEmail";
 
 export default async (): Promise<void> => {
   const docClient = new DynamoDB.DocumentClient();

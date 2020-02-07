@@ -1,12 +1,12 @@
 import path from "path";
 import * as AWSMock from "aws-sdk-mock";
 import generate from "../../../lib/commands/generate";
-import sendEmail from "../../../lib/utils/sendEmail";
+import sendEmail from "../../../lib/sendEmail";
 import { email, operationalDomain } from "../../../lib/env";
 import { Commands } from "../../../lib/commandSet";
 import generateTestEmail from "../../utils/generateTestEmail";
 
-jest.mock("../../../lib/utils/sendEmail");
+jest.mock("../../../lib/sendEmail");
 
 type Callback = (err: any, data: any) => void;
 

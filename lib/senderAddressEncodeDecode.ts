@@ -1,6 +1,6 @@
 import { Base64 } from "js-base64";
 import addrs from "email-addresses";
-import { operationalDomain } from "../env";
+import { operationalDomain } from "./env";
 
 export interface DecodedSenderAddress {
   alias: string;

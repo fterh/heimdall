@@ -4,7 +4,7 @@ import generate from "nanoid/generate";
 import config from "../config";
 import { email, operationalDomain } from "../env";
 import { Commands } from "../commandSet";
-import sendEmail from "../utils/sendEmail";
+import sendEmail from "../sendEmail";
 
 export default async (parsedMail: ParsedMail): Promise<void> => {
   const description = parsedMail.subject;

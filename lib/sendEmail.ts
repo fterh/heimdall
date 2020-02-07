@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 import Mail from "nodemailer/lib/mailer";
-import { awsSmtpHost, awsSmtpPort, awsSmtpUser, awsSmtpPass } from "../env";
+import { awsSmtpHost, awsSmtpPort, awsSmtpUser, awsSmtpPass } from "./env";
 
 export const createTransporter = (): Mail => {
   return nodemailer.createTransport({

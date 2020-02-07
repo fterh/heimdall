@@ -1,4 +1,5 @@
 import { DynamoDB } from "aws-sdk";
+import config from "../config";
 import { email, operationalDomain } from "../env";
 import { Commands } from "../commandSet";
 import sendEmail from "../utils/sendEmail";
@@ -6,7 +7,7 @@ import sendEmail from "../utils/sendEmail";
 export default async (): Promise<void> => {
   const docClient = new DynamoDB.DocumentClient();
   const docParams: DynamoDB.DocumentClient.ScanInput = {
-    TableName: "aliases"
+    TableName: config.tableName
   };
 
   const records: DynamoDB.DocumentClient.ScanOutput = await docClient

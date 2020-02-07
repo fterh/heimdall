@@ -1,5 +1,6 @@
 import { DynamoDB } from "aws-sdk";
 import { ParsedMail } from "mailparser";
+import config from "../config";
 import { email, operationalDomain } from "../env";
 import { Commands } from "../commandSet";
 import sendEmail from "../utils/sendEmail";
@@ -10,7 +11,7 @@ export default async (parsedMail: ParsedMail): Promise<void> => {
   console.log(`Deleting alias=${providedAlias}`);
   const docClient = new DynamoDB.DocumentClient();
   const params: DynamoDB.DocumentClient.DeleteItemInput = {
-    TableName: "aliases",
+    TableName: config.tableName,
     Key: {
       alias: providedAlias
     }

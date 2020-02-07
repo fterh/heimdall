@@ -1,6 +1,7 @@
 import { DynamoDB } from "aws-sdk";
 import { ParsedMail } from "mailparser";
 import generate from "nanoid/generate";
+import config from "../config";
 import { email, operationalDomain } from "../env";
 import { Commands } from "../commandSet";
 import sendEmail from "../utils/sendEmail";
@@ -15,7 +16,7 @@ export default async (parsedMail: ParsedMail): Promise<void> => {
   console.log("Attempting to store alias-description record");
   const docClient = new DynamoDB.DocumentClient();
   const docParams: DynamoDB.DocumentClient.PutItemInput = {
-    TableName: "aliases",
+    TableName: config.tableName,
     Item: {
       alias: generatedAlias,
       description

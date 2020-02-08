@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 import Mail from "nodemailer/lib/mailer";
-import { createTransporter, _sendMail } from "../../lib/utils/sendEmail";
+import { createTransporter, _sendMail } from "../../lib/sendEmail";
 
 jest.mock("nodemailer");
 

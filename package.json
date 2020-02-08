@@ -6,7 +6,7 @@
     "predeploy": "tsc lib/env.ts lib/config.ts",
     "postdeploy": "rm lib/env.js lib/config.js",
     "lint": "tsc --strict --noEmit && eslint \"**/*.ts\"",
-    "test": "AWS_ID=1234567890 AWS_SMTP_HOST=smtphost.com AWS_SMTP_PORT=123 AWS_SMTP_USER=smtpuser AWS_SMTP_PASS=smtppass BASE_DOMAIN=domain.com DEV_SUBDOMAIN=yarntest EMAIL=user@mydomain.com jest"
+    "test": "jest"
   },
   "dependencies": {
     "aws-sdk": "^2.605.0",
@@ -15,8 +15,8 @@
     "fast-deep-equal": "^3.1.1",
     "js-base64": "^2.5.1",
     "mailparser": "^2.7.7",
-    "nanoid": "^2.1.9",
-    "nodemailer": "^6.4.2"
+    "nodemailer": "^6.4.2",
+    "random-words": "^1.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.8.3",
@@ -27,7 +27,6 @@
     "@types/jest": "^24.9.0",
     "@types/js-base64": "^2.3.1",
     "@types/mailparser": "^2.7.0",
-    "@types/nanoid": "^2.1.0",
     "@types/node": "^13.1.7",
     "@types/nodemailer": "^6.4.0",
     "@typescript-eslint/eslint-plugin": "^2.16.0",

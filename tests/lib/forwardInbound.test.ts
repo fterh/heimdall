@@ -1,12 +1,12 @@
 import { email as myEmail, operationalDomain } from "../../lib/env";
 import forwardInbound, { generateFromHeader } from "../../lib/forwardInbound";
 import * as getAliasDescription from "../../lib/getAliasDescription";
-import sendEmail from "../../lib/utils/sendEmail";
-import senderAddressEncodeDecode from "../../lib/utils/senderAddressEncodeDecode";
+import sendEmail from "../../lib/sendEmail";
+import senderAddressEncodeDecode from "../../lib/senderAddressEncodeDecode";
 import assertEquivalentAttachments from "../utils/assertEquivalentAttachments";
 import generateTestEmail, { EMLFormatData } from "../utils/generateTestEmail";
 
-jest.mock("../../lib/utils/sendEmail");
+jest.mock("../../lib/sendEmail");
 jest
   .spyOn(getAliasDescription, "default")
   .mockImplementation(async () => "test description");

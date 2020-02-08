@@ -1,4 +1,4 @@
-import senderAddressEncodeDecode from "../../lib/utils/senderAddressEncodeDecode";
+import senderAddressEncodeDecode from "../../lib/senderAddressEncodeDecode";
 
 const alias = "testAlias";
 const senderAddress = "originalsender@domain.com";

@@ -2,9 +2,9 @@ import addrs from "email-addresses";
 import { EmailAddress, ParsedMail } from "mailparser";
 import Mail from "nodemailer/lib/mailer";
 import { operationalDomain } from "./env";
-import repackageReceivedAttachments from "./utils/repackageReceivedAttachments";
-import sendEmail from "./utils/sendEmail";
-import senderAddressEncodeDecode from "./utils/senderAddressEncodeDecode";
+import repackageReceivedAttachments from "./repackageReceivedAttachments";
+import sendEmail from "./sendEmail";
+import senderAddressEncodeDecode from "./senderAddressEncodeDecode";
 
 interface DecomposedUnpureAliasData {
   pureAlias: string;

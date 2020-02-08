@@ -2,9 +2,9 @@ import { ParsedMail } from "mailparser";
 import Mail from "nodemailer/lib/mailer";
 import { email as personalEmail, operationalDomain } from "./env";
 import getAliasDescription from "./getAliasDescription";
-import repackageReceivedAttachments from "./utils/repackageReceivedAttachments";
-import sendEmail from "./utils/sendEmail";
-import senderAddressEncodeDecode from "./utils/senderAddressEncodeDecode";
+import repackageReceivedAttachments from "./repackageReceivedAttachments";
+import sendEmail from "./sendEmail";
+import senderAddressEncodeDecode from "./senderAddressEncodeDecode";
 
 /**
  * Generates forwarded email's "from" header information

@@ -6,7 +6,9 @@ import { email, operationalDomain } from "../../../lib/env";
 import { Commands } from "../../../lib/commandSet";
 import generateTestEmail from "../../utils/generateTestEmail";
 
+jest.mock("../../../lib/aliasExists");
 jest.mock("../../../lib/sendEmail");
+jest.mock("../../../lib/generateAlias");
 
 type Callback = (err: any, data: any) => void;
 
@@ -40,7 +42,7 @@ it("should store the alias-description record and send a response email for a su
 
   expect(mockDocumentClient.mock.calls.length).toBe(1);
   expect(mockDocumentClient.mock.calls[0][0].Item).toStrictEqual({
-    alias: "fakeid",
+    alias: "randomlygeneratedalias",
     description: "Some description"
   });
 
@@ -48,7 +50,7 @@ it("should store the alias-description record and send a response email for a su
   expect(sendEmail).toHaveBeenCalledWith({
     from: `${Commands.Generate}@${operationalDomain}`,
     to: [email],
-    subject: "Generated alias: fakeid",
-    text: `You have generated fakeid@${operationalDomain} for "Some description".`
+    subject: "Generated alias: randomlygeneratedalias",
+    text: `You have generated randomlygeneratedalias@${operationalDomain} for "Some description".`
   });
 });

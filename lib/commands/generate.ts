@@ -1,29 +1,27 @@
 import { DynamoDB } from "aws-sdk";
 import { ParsedMail } from "mailparser";
-import generate from "nanoid/generate";
-import config from "../config";
+import aliasExists from "../aliasExists";
 import { email, operationalDomain } from "../env";
 import { Commands } from "../commandSet";
+import generateAlias from "../generateAlias";
 import sendEmail from "../sendEmail";
+import storeAliasDescriptionRecord from "../storeAliasDescriptionRecord";
 
 export default async (parsedMail: ParsedMail): Promise<void> => {
+  const docClient = new DynamoDB.DocumentClient(); // Avoid re-initializing
+
   const description = parsedMail.subject;
-  const generatedAlias = generate("0123456789abcdefghijklmnopqrstuvwxyz", 13); // It is important there are no "+" symbols here
+
+  let generatedAlias: string;
+  do {
+    generatedAlias = generateAlias();
+  } while (await aliasExists(generatedAlias, docClient));
   console.log(
     `Generated alias=${generatedAlias} for description=${description}`
   );
 
   console.log("Attempting to store alias-description record");
-  const docClient = new DynamoDB.DocumentClient();
-  const docParams: DynamoDB.DocumentClient.PutItemInput = {
-    TableName: config.tableName,
-    Item: {
-      alias: generatedAlias,
-      description
-    }
-  };
-
-  await docClient.put(docParams).promise();
+  storeAliasDescriptionRecord(generatedAlias, description, docClient);
   console.log("Successfully stored alias-description record");
 
   await sendEmail({

@@ -1,6 +1,15 @@
 // For a detailed explanation regarding each configuration property, visit:
 // https://jestjs.io/docs/en/configuration.html
 
+process.env.AWS_ID = "1234567890";
+process.env.AWS_SMTP_HOST = "smtphost.com";
+process.env.AWS_SMTP_PORT = "123";
+process.env.AWS_SMTP_USER = "smtpuser";
+process.env.AWS_SMTP_PASS = "smtppass";
+process.env.BASE_DOMAIN = "domain.com";
+process.env.DEV_SUBDOMAIN = "yarntest";
+process.env.EMAIL = "user@mydomain.com";
+
 module.exports = {
   // All imported modules in your tests should be mocked automatically
   // automock: false,

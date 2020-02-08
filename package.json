@@ -6,7 +6,7 @@
     "predeploy": "tsc lib/env.ts lib/config.ts",
     "postdeploy": "rm lib/env.js lib/config.js",
     "lint": "tsc --strict --noEmit && eslint \"**/*.ts\"",
-    "test": "AWS_ID=1234567890 AWS_SMTP_HOST=smtphost.com AWS_SMTP_PORT=123 AWS_SMTP_USER=smtpuser AWS_SMTP_PASS=smtppass BASE_DOMAIN=domain.com DEV_SUBDOMAIN=yarntest EMAIL=user@mydomain.com jest"
+    "test": "jest"
   },
   "dependencies": {
     "aws-sdk": "^2.605.0",

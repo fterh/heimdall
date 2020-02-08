@@ -13,6 +13,8 @@ This has also been a really fun project for me to learn more about AWS and the S
 
 Check out: [How I built Heimdall, an open-source personal email guardian.](https://medium.com/@fabianterh/how-i-built-heimdall-an-open-source-personal-email-guardian-68e306d172d1)
 
+Changelog is found in the Releases page.
+
 ## Why use Heimdall
 
 1. With Heimdall, you completely own and manage your data and the service. No feature limitations or having to trust a third-party company with your data.
@@ -44,11 +46,11 @@ Check out: [How I built Heimdall, an open-source personal email guardian.](https
 Run `yarn run deploy-dev`.
 This creates a parallel development CloudFormation stack.
 
-Add a new receipt rule in SES **before your production rule** for **2 actions**:
-Firstly, trigger your development S3 bucket.
-Secondly, "Stop Rule Set".
+Add a new receipt rule in SES **before your production rule** to trigger your development S3 bucket.
 For "recipients", enter a test subdomain (e.g. `test.yourverifieddomain.com`).
-Preferably, name your rule descriptively (e.g. `test`).
+Preferably, name your rule descriptively (e.g. `dev`).
+
+You also need to ensure that the `DEV_SUBDOMAIN` environment variable is set in `.env`.
 
 Note: You might need to update your DNS records for `test.yourverifieddomain.com`.
 

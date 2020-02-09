@@ -3,7 +3,7 @@ import addrs from "email-addresses";
 import { operationalDomain } from "./env";
 
 export interface DecodedSenderAddress {
-  alias: string;
+  aliasValue: string;
   senderAddress: string;
 }
 
@@ -13,30 +13,32 @@ export interface DecodedSenderAddress {
  * original sender's email address.
  */
 
-const encodeUnpureAlias = (
-  alias: string,
+const encodeUnpureAliasValue = (
+  aliasValue: string,
   originalSenderAddress: string
 ): string => {
   const encodedSenderAddress = Base64.encode(originalSenderAddress);
-  return `${alias}+${encodedSenderAddress}`;
+  return `${aliasValue}+${encodedSenderAddress}`;
 };
 
 const encodeEmailAddress = (
-  alias: string,
+  aliasValue: string,
   originalSenderAddress: string
 ): string => {
-  return `${encodeUnpureAlias(
-    alias,
+  return `${encodeUnpureAliasValue(
+    aliasValue,
     originalSenderAddress
   )}@${operationalDomain}`;
 };
 
-const decodeUnpureAlias = (unpureAlias: string): DecodedSenderAddress => {
+const decodeUnpureAliasValue = (
+  unpureAliasValue: string
+): DecodedSenderAddress => {
   // This works because there is no "+" character in Base64 characters
-  const [alias, encodedSenderAddress] = unpureAlias.split("+");
+  const [aliasValue, encodedSenderAddress] = unpureAliasValue.split("+");
 
   return {
-    alias,
+    aliasValue: aliasValue,
     senderAddress:
       encodedSenderAddress === undefined
         ? "" // Don't attempt to decode undefined
@@ -51,12 +53,12 @@ const decodeEmailAddress = (
     encodedEmailAddress
   ) as addrs.ParsedMailbox;
 
-  return decodeUnpureAlias(parsed.local);
+  return decodeUnpureAliasValue(parsed.local);
 };
 
 export default {
-  encodeUnpureAlias,
+  encodeUnpureAliasValue,
   encodeEmailAddress,
-  decodeUnpureAlias,
+  decodeUnpureAliasValue,
   decodeEmailAddress
 };

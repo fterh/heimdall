@@ -1,15 +1,14 @@
 import { email as myEmail, operationalDomain } from "../../lib/env";
 import forwardInbound, { generateFromHeader } from "../../lib/forwardInbound";
-import * as getAliasDescription from "../../lib/getAliasDescription";
+// @ts-ignore: We're using Jest's ES6 class mocks (https://jestjs.io/docs/en/es6-class-mocks)
+import { didReceiveEmailSpy } from "../../lib/models/Alias";
 import sendEmail from "../../lib/sendEmail";
 import senderAddressEncodeDecode from "../../lib/senderAddressEncodeDecode";
 import assertEquivalentAttachments from "../utils/assertEquivalentAttachments";
 import generateTestEmail, { EMLFormatData } from "../utils/generateTestEmail";
 
+jest.mock("../../lib/models/Alias");
 jest.mock("../../lib/sendEmail");
-jest
-  .spyOn(getAliasDescription, "default")
-  .mockImplementation(async () => "test description");
 
 const _sendEmail = sendEmail as jest.Mock<any, any>;
 
@@ -80,17 +79,18 @@ it("should forward received email to personal email address", async () => {
   await forwardInbound(testAlias, testEmail1);
   expect(sendEmail).toHaveBeenCalledTimes(1);
   expect(_sendEmail.mock.calls[0][0].envelope).toStrictEqual(expectedEnvelope);
-  expect(_sendEmail.mock.calls[0][0].subject).toBe(
-    "[test description] Test subject"
-  );
+  expect(_sendEmail.mock.calls[0][0].subject).toBe("Test subject");
+  expect(didReceiveEmailSpy).toHaveBeenCalledTimes(1);
 
   await forwardInbound(testAlias, testEmail2);
   expect(sendEmail).toHaveBeenCalledTimes(2);
   expect(_sendEmail.mock.calls[1][0].envelope).toStrictEqual(expectedEnvelope);
+  expect(didReceiveEmailSpy).toHaveBeenCalledTimes(2);
 
   await forwardInbound(testAlias, testEmail3);
   expect(sendEmail).toHaveBeenCalledTimes(3);
   expect(_sendEmail.mock.calls[2][0].envelope).toStrictEqual(expectedEnvelope);
+  expect(didReceiveEmailSpy).toHaveBeenCalledTimes(3);
 });
 
 it(`should encode the original sender's email address in the "from" header of the forwarded email`, async () => {

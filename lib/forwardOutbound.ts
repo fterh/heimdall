@@ -2,12 +2,13 @@ import addrs from "email-addresses";
 import { EmailAddress, ParsedMail } from "mailparser";
 import Mail from "nodemailer/lib/mailer";
 import { operationalDomain } from "./env";
+import Alias from "./models/Alias";
 import repackageReceivedAttachments from "./repackageReceivedAttachments";
 import sendEmail from "./sendEmail";
 import senderAddressEncodeDecode from "./senderAddressEncodeDecode";
 
 interface DecomposedUnpureAliasData {
-  pureAlias: string;
+  pureAliasValue: string;
   senderAddress: string;
 }
 
@@ -15,10 +16,12 @@ interface DecomposedUnpureAliasData {
  * Abstraction wrapper around the senderAddressEncodeDecode module
  * to handle edge cases.
  */
-export const decomposeUnpureAlias = (
-  unpureAlias: string
+export const decomposeUnpureAliasValue = (
+  unpureAliasValue: string
 ): DecomposedUnpureAliasData => {
-  const decoded = senderAddressEncodeDecode.decodeUnpureAlias(unpureAlias);
+  const decoded = senderAddressEncodeDecode.decodeUnpureAliasValue(
+    unpureAliasValue
+  );
 
   if (decoded.senderAddress === "") {
     throw new Error(
@@ -27,16 +30,16 @@ export const decomposeUnpureAlias = (
   }
 
   return {
-    pureAlias: decoded.alias,
+    pureAliasValue: decoded.aliasValue,
     senderAddress: decoded.senderAddress
   };
 };
 
 export const generateOriginalSenderEmailAddress = (
-  unpureAlias: string,
+  unpureAliasValue: string,
   originalToRecipients: Array<EmailAddress>
 ): EmailAddress => {
-  const decomposed = decomposeUnpureAlias(unpureAlias);
+  const decomposed = decomposeUnpureAliasValue(unpureAliasValue);
   let aliasIsMissing = true;
 
   const newToRecipients: Array<EmailAddress> = originalToRecipients
@@ -46,7 +49,7 @@ export const generateOriginalSenderEmailAddress = (
         addrs.parseOneAddress(recipient.address) as addrs.ParsedMailbox
     )
     // Remove all other recipients except for (unpure) alias
-    .filter(parsedRecipient => parsedRecipient.local === unpureAlias)
+    .filter(parsedRecipient => parsedRecipient.local === unpureAliasValue)
     // Generate original sender's email address object
     .map(() => {
       aliasIsMissing = false;
@@ -66,15 +69,15 @@ export const generateOriginalSenderEmailAddress = (
 };
 
 export const generateOutboundMailOptions = (
-  unpureAlias: string,
+  unpureAliasValue: string,
   parsedMail: ParsedMail
 ): Mail.Options => {
   const originalSender = generateOriginalSenderEmailAddress(
-    unpureAlias,
+    unpureAliasValue,
     parsedMail.to.value
   );
 
-  const pureAlias = decomposeUnpureAlias(unpureAlias).pureAlias;
+  const pureAlias = decomposeUnpureAliasValue(unpureAliasValue).pureAliasValue;
 
   const mailOptions: Mail.Options = {
     from: `${pureAlias}@${operationalDomain}`,
@@ -90,13 +93,22 @@ export const generateOutboundMailOptions = (
   return mailOptions;
 };
 
-// unpureAlias is likely in the format "originalAlias+base64EncodedData",
-// so we name it unpureAlias to prevent confusion.
-export default async (unpureAlias: string, parsedMail: ParsedMail) => {
-  console.log("Attempting to forward received email to personal email");
+// unpureAliasValue is likely in the format "originalAlias+base64EncodedData",
+// so we name it unpure to prevent confusion.
+export default async (unpureAliasValue: string, parsedMail: ParsedMail) => {
+  console.log("Attempting to forward received email to original sender");
 
-  const mailOptions = generateOutboundMailOptions(unpureAlias, parsedMail);
+  const pureAliasValue = decomposeUnpureAliasValue(unpureAliasValue)
+    .pureAliasValue;
+
+  const alias = await Alias.getAlias(pureAliasValue);
+  if (alias === undefined) {
+    throw new Error(`Alias=${pureAliasValue} not found in database!`);
+  }
+
+  const mailOptions = generateOutboundMailOptions(unpureAliasValue, parsedMail);
   await sendEmail(mailOptions);
+  await alias.didSendEmail();
 
   console.log("Successfully forwarded email to original sender");
 };

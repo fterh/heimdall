@@ -1,14 +1,17 @@
 import { EmailAddress } from "mailparser";
 import { operationalDomain } from "../../lib/env";
 import sendEmail from "../../lib/sendEmail";
+// @ts-ignore: We're using Jest's ES6 class mocks (https://jestjs.io/docs/en/es6-class-mocks)
+import { didSendEmailSpy } from "../../lib/models/Alias";
 import senderAddressEncodeDecode from "../../lib/senderAddressEncodeDecode";
 import forwardOutbound, {
-  decomposeUnpureAlias,
+  decomposeUnpureAliasValue,
   generateOriginalSenderEmailAddress
 } from "../../lib/forwardOutbound";
 import assertEquivalentAttachments from "../utils/assertEquivalentAttachments";
 import generateTestEmail, { EMLFormatData } from "../utils/generateTestEmail";
 
+jest.mock("../../lib/models/Alias");
 jest.mock("../../lib/sendEmail");
 
 const testAlias = "testAlias";
@@ -39,7 +42,10 @@ it("should send outbound email from alias to original sender", async () => {
   const testEmail = await generateTestEmail(testEmailData1);
 
   await forwardOutbound(
-    senderAddressEncodeDecode.encodeUnpureAlias(testAlias, senderEmailAddress),
+    senderAddressEncodeDecode.encodeUnpureAliasValue(
+      testAlias,
+      senderEmailAddress
+    ),
     testEmail
   );
 
@@ -55,12 +61,13 @@ it("should send outbound email from alias to original sender", async () => {
     html: "Test html\n",
     attachments: []
   });
+  expect(didSendEmailSpy).toHaveBeenCalledTimes(1);
 });
 
 it("should throw if original sender address is missing", () => {
   expect(() => {
-    decomposeUnpureAlias(
-      senderAddressEncodeDecode.encodeUnpureAlias("testAlias", "")
+    decomposeUnpureAliasValue(
+      senderAddressEncodeDecode.encodeUnpureAliasValue("testAlias", "")
     );
   }).toThrow(
     new Error(
@@ -84,7 +91,10 @@ it("should only generate original sender's email address", () => {
   ];
 
   const generatedRecipient = generateOriginalSenderEmailAddress(
-    senderAddressEncodeDecode.encodeUnpureAlias(testAlias, senderEmailAddress),
+    senderAddressEncodeDecode.encodeUnpureAliasValue(
+      testAlias,
+      senderEmailAddress
+    ),
     emails
   );
 
@@ -119,7 +129,10 @@ it(`should discard all other recipients on the "to" and "cc" header lists`, asyn
   });
 
   await forwardOutbound(
-    senderAddressEncodeDecode.encodeUnpureAlias(testAlias, senderEmailAddress),
+    senderAddressEncodeDecode.encodeUnpureAliasValue(
+      testAlias,
+      senderEmailAddress
+    ),
     testEmail
   );
 
@@ -135,13 +148,17 @@ it(`should discard all other recipients on the "to" and "cc" header lists`, asyn
     html: "Test html\n",
     attachments: []
   });
+  expect(didSendEmailSpy).toHaveBeenCalledTimes(1);
 });
 
 it("should forward attachments to original sender", async () => {
   const testEmail = await generateTestEmail(testEmailData2);
 
   await forwardOutbound(
-    senderAddressEncodeDecode.encodeUnpureAlias(testAlias, senderEmailAddress),
+    senderAddressEncodeDecode.encodeUnpureAliasValue(
+      testAlias,
+      senderEmailAddress
+    ),
     testEmail
   );
 
@@ -154,6 +171,7 @@ it("should forward attachments to original sender", async () => {
       _sendEmail.mock.calls[0][0].attachments[0]
     )
   ).toBe(true);
+  expect(didSendEmailSpy).toHaveBeenCalledTimes(1);
 });
 
 /* Security-related tests */

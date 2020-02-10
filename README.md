@@ -84,6 +84,14 @@ Email `remove@yourverifieddomain.com` with the alias as the title (case-sensitiv
 Email `info@yourverifieddomain.com` with the alias as the title (case-sensitive).
 You will receive usage information for the particular alias.
 
+Supported usage stats:
+
+- Alias creation date
+- Emails received
+- Emails sent
+- Date of last received email
+- Date of last sent email
+
 #### Update an alias
 
 Coming soon - not supported yet.

@@ -109,9 +109,13 @@ If you want to build new features or tweak existing features, you can set up a p
 
 1. Ensure that the `DEV_SUBDOMAIN` environment variable is set in `.env` (e.g. `test`).
 2. Run `yarn run deploy-dev`.
-This creates a parallel development CloudFormation stack.
+   This creates a parallel development CloudFormation stack.
 3. Add a new receipt rule in SES **before your production rule** to trigger your development S3 bucket.
-For "recipients", enter the same test subdomain as you set in step 1 (e.g. `test.yourverifieddomain.com`).
-Preferably, name your rule descriptively (e.g. `dev`).
+   For "recipients", enter the same test subdomain as you set in step 1 (e.g. `test.yourverifieddomain.com`).
+   Preferably, name your rule descriptively (e.g. `dev`).
 
 Note: You need to update your DNS records for `test.yourverifieddomain.com` as you did when verifying your domain for AWS SES.
+
+## Migration
+
+To run migration scripts, first compile using `tsc scripts/migrate_vX.ts`, then run using `node scripts/migrate_vX.js`.

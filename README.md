@@ -30,6 +30,7 @@ Changelog can be found under Releases.
 2. **Reply anonymously:** Reply to emails from your alias without revealing your personal email address.
 3. **Attachments:** Attachments are supported on incoming and outgoing emails (subject to size limits - see below).
 4. **Email commands:** Manage your aliases through email directly - no separate app or website required.
+5. **Usage stats:** Easily check the usage stats of each alias.
 
 ### Receiving emails
 
@@ -77,6 +78,11 @@ Dev note: This reads up to a maximum of 1MB of data (due to AWS's limitations).
 #### Remove an alias
 
 Email `remove@yourverifieddomain.com` with the alias as the title (case-sensitive). You will receive the operation outcome (success/failure) as a reply.
+
+### Usage stats
+
+Email `info@yourverifieddomain.com` with the alias as the title (case-sensitive).
+You will receive usage information for the particular alias.
 
 #### Update an alias
 

@@ -10,7 +10,7 @@ test("encode alias and email address", () => {
   );
   const decoded = senderAddressEncodeDecode.decodeEmailAddress(encoded);
 
-  expect(decoded.alias).toBe(alias);
+  expect(decoded.aliasValue).toBe(alias);
   expect(decoded.senderAddress).toBe(senderAddress);
 });
 
@@ -18,6 +18,6 @@ test("encode alias and empty email address", () => {
   const encoded = senderAddressEncodeDecode.encodeEmailAddress(alias, "");
   const decoded = senderAddressEncodeDecode.decodeEmailAddress(encoded);
 
-  expect(decoded.alias).toBe(alias);
+  expect(decoded.aliasValue).toBe(alias);
   expect(decoded.senderAddress).toBe("");
 });

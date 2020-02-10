@@ -1,65 +1,35 @@
-import { DynamoDB } from "aws-sdk";
-import config from "../config";
 import { email, operationalDomain } from "../env";
 import { Commands } from "../commandSet";
+import Alias from "../models/Alias";
 import sendEmail from "../sendEmail";
 
 export default async (): Promise<void> => {
-  const docClient = new DynamoDB.DocumentClient();
-  const docParams: DynamoDB.DocumentClient.ScanInput = {
-    TableName: config.tableName
-  };
+  const getAliasesResults = await Alias.getAllAliases();
 
-  const records: DynamoDB.DocumentClient.ScanOutput = await docClient
-    .scan(docParams)
-    .promise();
-
-  console.log("Successfully scanned database for records");
-
-  if (records.Items && records.Items.length === 0) {
-    return await sendEmail({
+  if (getAliasesResults.aliases.length === 0) {
+    await sendEmail({
       from: `${Commands.List}@${operationalDomain}`,
       to: [email],
-      subject: `Alias list (${new Date()})`,
+      subject: `Alias list (generated on: ${new Date()})`,
       text: "No aliases found."
     });
-  }
-
-  let mightHaveMoreRecords = false;
-  let hasMalformedRecords = false;
-
-  if (records.LastEvaluatedKey) {
-    mightHaveMoreRecords = true;
-    console.log(
-      "Scan results' LastEvaluatedKey is not undefined; there might be more records in the results set"
-    );
+    return;
   }
 
   let output = "Alias : Description\n";
-  records.Items?.forEach(item => {
-    if (item.description === undefined) {
-      hasMalformedRecords = true;
-      return console.log(
-        `Record with alias=${item.alias} is missing the "description" attribute. Skipping.`
-      );
-    }
-    output += `${item.alias} : ${item.description}\n`;
+  getAliasesResults.aliases.forEach(alias => {
+    output += `${alias.value} : ${alias.description}\n`;
   });
 
-  if (mightHaveMoreRecords) {
+  if (getAliasesResults.lastEvaluatedKey !== undefined) {
     output +=
       "There might be more records in the results set. Check the logs and database for more information.";
-  }
-
-  if (hasMalformedRecords) {
-    output +=
-      "The database contains malformed records. Check the logs and database for more information.";
   }
 
   await sendEmail({
     from: `${Commands.List}@${operationalDomain}`,
     to: [email],
-    subject: `Alias list (${new Date()})`,
+    subject: `Alias list (generated on: ${new Date()})`,
     text: output
   });
 };

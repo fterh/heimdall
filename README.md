@@ -30,6 +30,7 @@ Changelog can be found under Releases.
 2. **Reply anonymously:** Reply to emails from your alias without revealing your personal email address.
 3. **Attachments:** Attachments are supported on incoming and outgoing emails (subject to size limits - see below).
 4. **Email commands:** Manage your aliases through email directly - no separate app or website required.
+5. **Usage stats:** Easily check the usage stats of each alias.
 
 ### Receiving emails
 
@@ -78,6 +79,19 @@ Dev note: This reads up to a maximum of 1MB of data (due to AWS's limitations).
 
 Email `remove@yourverifieddomain.com` with the alias as the title (case-sensitive). You will receive the operation outcome (success/failure) as a reply.
 
+### Usage stats
+
+Email `info@yourverifieddomain.com` with the alias as the title (case-sensitive).
+You will receive usage information for the particular alias.
+
+Supported usage stats:
+
+- Alias creation date
+- Emails received
+- Emails sent
+- Date of last received email
+- Date of last sent email
+
 #### Update an alias
 
 Coming soon - not supported yet.
@@ -109,9 +123,13 @@ If you want to build new features or tweak existing features, you can set up a p
 
 1. Ensure that the `DEV_SUBDOMAIN` environment variable is set in `.env` (e.g. `test`).
 2. Run `yarn run deploy-dev`.
-This creates a parallel development CloudFormation stack.
+   This creates a parallel development CloudFormation stack.
 3. Add a new receipt rule in SES **before your production rule** to trigger your development S3 bucket.
-For "recipients", enter the same test subdomain as you set in step 1 (e.g. `test.yourverifieddomain.com`).
-Preferably, name your rule descriptively (e.g. `dev`).
+   For "recipients", enter the same test subdomain as you set in step 1 (e.g. `test.yourverifieddomain.com`).
+   Preferably, name your rule descriptively (e.g. `dev`).
 
 Note: You need to update your DNS records for `test.yourverifieddomain.com` as you did when verifying your domain for AWS SES.
+
+## Migration
+
+To run migration scripts, first compile using `tsc scripts/migrate_vX.ts`, then run using `node scripts/migrate_vX.js`.

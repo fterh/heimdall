@@ -79,7 +79,7 @@ Dev note: This reads up to a maximum of 1MB of data (due to AWS's limitations).
 
 Email `remove@yourverifieddomain.com` with the alias as the title (case-sensitive). You will receive the operation outcome (success/failure) as a reply.
 
-### Usage stats
+#### Usage stats
 
 Email `info@yourverifieddomain.com` with the alias as the title (case-sensitive).
 You will receive usage information for the particular alias.

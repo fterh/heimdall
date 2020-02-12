@@ -9,6 +9,7 @@
     "moduleResolution": "node",
     "lib": ["es2015"],
     "rootDir": "./",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "typeRoots": ["./node_modules/@types", "./types/"]
   }
 }

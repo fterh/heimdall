@@ -39,7 +39,6 @@ All incoming emails to your domain are rejected by default unless they are to va
 Emails received on valid aliases will be forwarded to your personal email address.
 
 Forwarded emails will preserve metadata information, such as any other recipients in the "to" or "CC" headers.
-The email subject will be prepended with the alias description in brackets `[Description] Original Email Subject`.
 
 ### Replying
 

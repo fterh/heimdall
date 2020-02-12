@@ -27,3 +27,13 @@ it("should generate an alias with the description and send a response email", as
     text: `You have generated randomlygeneratedaliasvalue@${operationalDomain} for "Some description".`
   });
 });
+
+it("`should generate an alias for an email without a subject", async () => {
+  const testEmail = await generateTestEmail({
+    to: { email: "test@domain.com" }
+  });
+
+  await generate(testEmail);
+
+  expect(Alias.generateAlias).toHaveBeenCalledWith("No description");
+});

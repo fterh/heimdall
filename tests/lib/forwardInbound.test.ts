@@ -60,6 +60,15 @@ const testEmailData3: EMLFormatData = {
   attachments: [testAttachment]
 };
 
+const testEmailData4: EMLFormatData = {
+  from: {
+    name: "Sender Name",
+    email: "sender@domain.com"
+  },
+  to: aliasEmail,
+  html: "Test body text"
+};
+
 it("should forward received email to personal email address", async () => {
   const testEmail1 = await generateTestEmail(testEmailData1);
   const testEmail2 = await generateTestEmail(testEmailData2);
@@ -137,4 +146,11 @@ it("should forward attachments to personal email address", async () => {
       _sendEmail.mock.calls[0][0].attachments[0]
     )
   ).toBe(true);
+});
+
+it("should default to an empty string if there is no email subject", async () => {
+  const testEmail = await generateTestEmail(testEmailData4);
+
+  await forwardInbound(testAlias, testEmail);
+  expect(_sendEmail.mock.calls[0][0].subject).toBe("");
 });

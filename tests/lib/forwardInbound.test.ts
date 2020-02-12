@@ -117,7 +117,7 @@ it(`should prioritize the "reply-to" header over the "from" header in the origin
   };
   const res = generateFromHeader(testAlias, testEmail);
   expect(res).toStrictEqual({
-    name: "Someone Else <someoneelse@domain.com>",
+    name: "Someone Else [someoneelse@domain.com]",
     address: senderAddressEncodeDecode.encodeEmailAddress(
       testAlias,
       "someoneelse@domain.com"

@@ -30,7 +30,7 @@ export const generateFromHeader = (
   }
 
   return {
-    name: `${replyToName} <${replyToEmailAddress}>`,
+    name: `${replyToName} [${replyToEmailAddress}]`,
     address: senderAddressEncodeDecode.encodeEmailAddress(
       aliasValue,
       replyToEmailAddress

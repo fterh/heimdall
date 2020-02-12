@@ -5,7 +5,7 @@ import Alias from "../models/Alias";
 import sendEmail from "../sendEmail";
 
 export default async (parsedMail: ParsedMail): Promise<void> => {
-  const description = parsedMail.subject;
+  const description = parsedMail.subject || "No description";
   const alias = await Alias.generateAlias(description);
 
   await sendEmail({

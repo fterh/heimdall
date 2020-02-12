@@ -33,13 +33,25 @@ it("should send a response email with the usage stats of a valid alias", async (
   );
 });
 
-it("should send a response email indicating alias does not exist", async () => {
+it("should throw if no alias has been provided", async () => {
+  const testEmail = await generateTestEmail({
+    to: { email: "test@domain.com" }
+  });
+
+  const res = info(testEmail);
+
+  expect(res).rejects.toEqual(
+    new Error("Alias value (email subject) is undefined")
+  );
+});
+
+it("should indicate if an alias does not exist", async () => {
   jest.spyOn(Alias, "getAlias").mockImplementation(async () => {
     return undefined;
   });
 
   const testEmail = await generateTestEmail({
-    to: [{ email: "test@domain.com" }],
+    to: { email: "test@domain.com" },
     subject: "validexistingalias"
   });
 

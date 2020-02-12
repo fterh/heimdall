@@ -28,6 +28,11 @@ export const prepareAliasInfoText = (alias: Alias): string => {
 
 export default async (parsedMail: ParsedMail): Promise<void> => {
   const aliasValue = parsedMail.subject;
+
+  if (aliasValue === undefined) {
+    throw new Error("Alias value (email subject) is undefined");
+  }
+
   const alias = await Alias.getAlias(aliasValue);
 
   if (alias === undefined) {

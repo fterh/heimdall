@@ -46,7 +46,7 @@ export const generateInboundMailOptions = async (
     from: generateFromHeader(alias.value, parsedMail),
     to: parsedMail.to.value,
     cc: parsedMail.cc?.value,
-    subject: parsedMail.subject,
+    subject: parsedMail.subject || "",
     html:
       parsedMail.html !== false
         ? (parsedMail.html as string) // Will never be `true`

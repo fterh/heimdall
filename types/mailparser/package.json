@@ -1,0 +1,31 @@
+{
+    "name": "@types/mailparser",
+    "version": "2.7.0",
+    "description": "TypeScript definitions for mailparser",
+    "license": "MIT",
+    "contributors": [
+        {
+            "name": "Peter Snider",
+            "url": "https://github.com/psnider",
+            "githubUsername": "psnider"
+        },
+        {
+            "name": "Andrey Volynkin",
+            "url": "https://github.com/Avol-V",
+            "githubUsername": "Avol-V"
+        }
+    ],
+    "main": "",
+    "types": "index.d.ts",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+        "directory": "types/mailparser"
+    },
+    "scripts": {},
+    "dependencies": {
+        "@types/node": "*"
+    },
+    "typesPublisherContentHash": "488b69a5c10136b0019e427e6f3ddd6eb49e4ca82a2b1553276bbf45c79e126f",
+    "typeScriptVersion": "2.8"
+}

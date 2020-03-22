@@ -111,8 +111,9 @@ Received emails must be <30MB. Outgoing emails must be <10MB.
 3. Populate required environment variables in `.env.sample`, and rename to `.env`.
    It is important that `EMAIL` matches your personal email exactly.
 4. Run `yarn global add serverless`.
-5. Set up Serverless, then run `yarn run deploy-prod`.
-6. Add a receipt rule in SES to trigger your S3 bucket (created in step 5).
+5. Run `yarn`.
+6. Set up Serverless, then run `yarn run deploy-prod`.
+7. Add a receipt rule in SES to trigger your S3 bucket (created in step 6).
    For "recipients", enter your domain name (e.g. `yourverifieddomain.com`).
    Preferably, name your rule descriptively (e.g. `prod`).
 

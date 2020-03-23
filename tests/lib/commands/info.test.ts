@@ -40,7 +40,7 @@ it("should throw if no alias has been provided", async () => {
 
   const res = info(testEmail);
 
-  expect(res).rejects.toEqual(
+  await expect(res).rejects.toEqual(
     new Error("Alias value (email subject) is undefined")
   );
 });

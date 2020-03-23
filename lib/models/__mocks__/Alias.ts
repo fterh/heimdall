@@ -3,6 +3,7 @@ import { AliasData } from "../Alias";
 export const now = new Date();
 export const didReceiveEmailSpy = jest.fn();
 export const didSendEmailSpy = jest.fn();
+export const INVALID_ALIAS = "invalidalias";
 
 export default class MockAlias implements AliasData {
   value: string;
@@ -34,6 +35,10 @@ export default class MockAlias implements AliasData {
   });
 
   static getAlias = jest.fn(async (aliasValue: string) => {
+    if (aliasValue === INVALID_ALIAS) {
+      return;
+    }
+
     return new MockAlias({
       value: aliasValue,
       description: "test description",

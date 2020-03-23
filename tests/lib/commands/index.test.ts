@@ -35,7 +35,7 @@ it("should call the right command handler", async () => {
 
 it("should throw if the command is unrecognized", async () => {
   const res = handleCommand("edit", testEmailAuthenticated);
-  expect(res).rejects.toEqual(new Error(`"edit" is not a command`));
+  await expect(res).rejects.toEqual(new Error(`"edit" is not a command`));
 });
 
 it("should throw if the command is not authenticated", async () => {

@@ -2,6 +2,7 @@ import { email as myEmail, operationalDomain } from "../../lib/env";
 import forwardInbound, { generateFromHeader } from "../../lib/forwardInbound";
 // @ts-ignore: We're using Jest's ES6 class mocks (https://jestjs.io/docs/en/es6-class-mocks)
 import { didReceiveEmailSpy } from "../../lib/models/Alias";
+import { INVALID_ALIAS } from "../../lib/models/__mocks__/Alias";
 import sendEmail from "../../lib/sendEmail";
 import senderAddressEncodeDecode from "../../lib/senderAddressEncodeDecode";
 import assertEquivalentAttachments from "../utils/assertEquivalentAttachments";
@@ -153,4 +154,11 @@ it("should default to an empty string if there is no email subject", async () =>
 
   await forwardInbound(testAlias, testEmail);
   expect(_sendEmail.mock.calls[0][0].subject).toBe("");
+});
+
+it("should not throw if the alias does not exist", async () => {
+  const testEmail = await generateTestEmail(testEmailData1);
+  const res = forwardInbound(INVALID_ALIAS, testEmail);
+
+  await expect(res).resolves.toBeUndefined();
 });

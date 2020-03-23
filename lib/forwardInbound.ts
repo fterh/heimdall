@@ -73,7 +73,8 @@ export default async (
 
   const alias = await Alias.getAlias(aliasValue);
   if (alias === undefined) {
-    throw new Error(`Alias=${aliasValue} not found in database!`);
+    console.log("Skipping forwarding received email, as alias does not exist");
+    return;
   }
   const mailOptions = await generateInboundMailOptions(alias, parsedMail);
   await sendEmail(mailOptions);

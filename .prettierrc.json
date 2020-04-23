@@ -1,3 +1,5 @@
 {
-  "tabWidth": 2
+  "arrowParens": "avoid",
+  "tabWidth": 2,
+  "trailingComma": "none"
 }

@@ -25,12 +25,20 @@ export interface EMLFormatData {
   attachments?: Array<EMLFormatDataAttachment>;
 }
 
-export default async (data: EMLFormatData): Promise<ParsedMail> => {
+export default async (
+  data: EMLFormatData,
+  messageId: string | undefined = undefined,
+  references: Array<string> | undefined = undefined
+): Promise<ParsedMail> => {
   let testEml = "";
   emlformat.build(data, (err: Error | null, eml: string) => {
     if (err) return console.error(err);
     testEml = eml;
   });
 
-  return await simpleParser(testEml);
+  const testEmail = await simpleParser(testEml);
+  testEmail.messageId = messageId;
+  testEmail.references = references;
+
+  return testEmail;
 };

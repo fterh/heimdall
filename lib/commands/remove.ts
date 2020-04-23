@@ -3,6 +3,7 @@ import { ParsedMail } from "mailparser";
 import config from "../config";
 import { email, operationalDomain } from "../env";
 import { Commands } from "../commandSet";
+import generateReplyEmail from "../generateReplyEmail";
 import sendEmail from "../sendEmail";
 
 export default async (parsedMail: ParsedMail): Promise<void> => {
@@ -20,10 +21,18 @@ export default async (parsedMail: ParsedMail): Promise<void> => {
   await docClient.delete(params).promise();
   console.log("Deletion successful");
 
-  await sendEmail({
-    from: `${Commands.Remove}@${operationalDomain}`,
-    to: [email],
-    subject: `Delete alias ${providedAlias}`,
-    text: "Deletion completed."
-  });
+  await sendEmail(
+    generateReplyEmail(
+      {
+        from: {
+          name: "Remove",
+          address: `${Commands.Remove}@${operationalDomain}`
+        },
+        to: [email],
+        subject: parsedMail.subject,
+        text: "Deletion completed."
+      },
+      parsedMail
+    )
+  );
 };

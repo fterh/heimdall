@@ -27,7 +27,7 @@ export default async (command: string, parsedMail: ParsedMail) => {
 
     case Commands.List:
       console.log("Invoking list command");
-      await list();
+      await list(parsedMail);
       break;
 
     case Commands.Remove:

@@ -2,6 +2,7 @@ import { ParsedMail } from "mailparser";
 import { Commands } from "../commandSet";
 import { email, operationalDomain } from "../env";
 import Alias from "../models/Alias";
+import generateReplyEmail from "../generateReplyEmail";
 import sendEmail from "../sendEmail";
 
 const commandEmailAddress = `${Commands.Info}@${operationalDomain}`;
@@ -45,10 +46,18 @@ export default async (parsedMail: ParsedMail): Promise<void> => {
     return;
   }
 
-  await sendEmail({
-    from: commandEmailAddress,
-    to: email,
-    subject: `Info: ${aliasValue}@${operationalDomain}`,
-    text: prepareAliasInfoText(alias)
-  });
+  await sendEmail(
+    generateReplyEmail(
+      {
+        from: {
+          name: "Info",
+          address: commandEmailAddress
+        },
+        to: email,
+        subject: parsedMail.subject,
+        text: prepareAliasInfoText(alias)
+      },
+      parsedMail
+    )
+  );
 };

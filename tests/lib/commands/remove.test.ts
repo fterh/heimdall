@@ -31,10 +31,13 @@ it("should delete the provided alias", async () => {
     }
   );
 
-  const testEmail = await generateTestEmail({
-    to: [{ email: "test@domain.com" }],
-    subject: "abandonedalias"
-  });
+  const testEmail = await generateTestEmail(
+    {
+      to: [{ email: "test@domain.com" }],
+      subject: "abandonedalias"
+    },
+    "messageId"
+  );
 
   await remove(testEmail);
 
@@ -45,9 +48,14 @@ it("should delete the provided alias", async () => {
 
   expect(sendEmail).toHaveBeenCalledTimes(1);
   expect(sendEmail).toHaveBeenCalledWith({
-    from: `${Commands.Remove}@${operationalDomain}`,
+    from: {
+      name: "Remove",
+      address: `${Commands.Remove}@${operationalDomain}`
+    },
     to: [email],
-    subject: "Delete alias abandonedalias",
+    inReplyTo: "messageId",
+    references: ["messageId"],
+    subject: "abandonedalias",
     text: "Deletion completed."
   });
 });

@@ -9,10 +9,13 @@ jest.mock("../../../lib/sendEmail");
 jest.mock("../../../lib/models/Alias");
 
 it("should generate an alias with the description and send a response email", async () => {
-  const testEmail = await generateTestEmail({
-    to: [{ email: "test@domain.com" }],
-    subject: "Some description"
-  });
+  const testEmail = await generateTestEmail(
+    {
+      to: [{ email: "test@domain.com" }],
+      subject: "Some description"
+    },
+    "messageId"
+  );
 
   await generate(testEmail);
 
@@ -21,9 +24,14 @@ it("should generate an alias with the description and send a response email", as
 
   expect(sendEmail).toHaveBeenCalledTimes(1);
   expect(sendEmail).toHaveBeenCalledWith({
-    from: `${Commands.Generate}@${operationalDomain}`,
+    from: {
+      name: "Generate",
+      address: `${Commands.Generate}@${operationalDomain}`
+    },
     to: [email],
-    subject: "Generated alias: randomlygeneratedaliasvalue",
+    inReplyTo: "messageId",
+    references: ["messageId"],
+    subject: "Some description",
     text: `You have generated randomlygeneratedaliasvalue@${operationalDomain} for "Some description".`
   });
 });

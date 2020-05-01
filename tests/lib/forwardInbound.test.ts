@@ -1,5 +1,8 @@
 import { email as myEmail, operationalDomain } from "../../lib/env";
-import forwardInbound, { generateFromHeader } from "../../lib/forwardInbound";
+import forwardInbound, {
+  generateFromHeader,
+  representNameAndEmailAddress
+} from "../../lib/forwardInbound";
 // @ts-ignore: We're using Jest's ES6 class mocks (https://jestjs.io/docs/en/es6-class-mocks)
 import { didReceiveEmailSpy } from "../../lib/models/Alias";
 import { INVALID_ALIAS } from "../../lib/models/__mocks__/Alias";
@@ -161,4 +164,10 @@ it("should not throw if the alias does not exist", async () => {
   const res = forwardInbound(INVALID_ALIAS, testEmail);
 
   await expect(res).resolves.toBeUndefined();
+});
+
+it("should not bracket the email address if there is no name", () => {
+  expect(representNameAndEmailAddress("", "user@domain.com")).toBe(
+    "user@domain.com"
+  );
 });

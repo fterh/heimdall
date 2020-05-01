@@ -6,6 +6,16 @@ import repackageReceivedAttachments from "./repackageReceivedAttachments";
 import sendEmail from "./sendEmail";
 import senderAddressEncodeDecode from "./senderAddressEncodeDecode";
 
+export const representNameAndEmailAddress = (
+  name: string,
+  emailAddress: string
+): string => {
+  if (name === "") {
+    return emailAddress;
+  }
+  return `${name} [${emailAddress}]`;
+};
+
 /**
  * Generates forwarded email's "from" header information
  * that encapsualtes original sender's name and email address.
@@ -30,7 +40,7 @@ export const generateFromHeader = (
   }
 
   return {
-    name: `${replyToName} [${replyToEmailAddress}]`,
+    name: representNameAndEmailAddress(replyToName, replyToEmailAddress),
     address: senderAddressEncodeDecode.encodeEmailAddress(
       aliasValue,
       replyToEmailAddress

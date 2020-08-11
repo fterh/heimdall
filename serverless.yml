@@ -2,16 +2,15 @@ service: heimdall
 
 plugins:
   - serverless-plugin-typescript
-
+ 
 custom:
-  bucket: heimdall${file(lib/env.js):serverless.stage}${file(lib/env.js):serverless.awsId}
-  bucketRef: S3BucketHeimdall${file(lib/env.js):serverless.stage}${file(lib/env.js):serverless.awsId}
-
+  bucket: heimdallemail${file(lib/env.js):serverless.stage}${file(lib/env.js):serverless.awsId}
+  
 provider:
   name: aws
   runtime: nodejs12.x
   stage: ${file(lib/env.js):serverless.stage}
-  region: us-west-2
+  region: us-east-1
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -19,7 +18,19 @@ provider:
         - dynamodb:*
         - ses:*
       Resource: "*"
-
+    - Effect: Allow
+      Action:
+        - ssm:GetParameter
+      Resource:
+        Fn::Join:
+          - ''
+          -
+            - 'arn:aws:ssm:'
+            - Ref: AWS::Region
+            - ':'
+            - Ref: AWS::AccountId
+            - ':parameter/wabble_smtp_password'
+  
 functions:
   incoming:
     handler: functions/receipt.handler
@@ -29,22 +40,34 @@ functions:
       AWS_SMTP_PORT: ${file(lib/env.js):serverless.awsSmtpPort}
       AWS_SMTP_USER: ${file(lib/env.js):serverless.awsSmtpUser}
       AWS_SMTP_PASS: ${file(lib/env.js):serverless.awsSmtpPass}
+      AWS_PARAMATER_STORE_NAME: ${file(lib/env.js):serverless.awsParameterStoreName}
       BASE_DOMAIN: ${file(lib/env.js):serverless.baseDomain}
       DEV_SUBDOMAIN: ${file(lib/env.js):serverless.devSubdomain}
       EMAIL: ${file(lib/env.js):serverless.email}
       STAGE: ${file(lib/env.js):serverless.stage}
     events:
       - s3:
-          bucket: ${self:custom.bucket}
+          bucket: "${self:custom.bucket}"
           event: s3:ObjectCreated:*
+          existing: true
 
 resources:
   Resources:
+    S3SharedBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: "${self:custom.bucket}"
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: true
+          BlockPublicPolicy: true
+          IgnorePublicAcls: true
+          RestrictPublicBuckets: true
+
     S3BucketPermissions:
       Type: AWS::S3::BucketPolicy
       Properties:
         Bucket:
-          Ref: ${self:custom.bucketRef}
+          Ref: S3SharedBucket
         PolicyDocument:
           Statement:
             - Principal:
@@ -55,7 +78,7 @@ resources:
               Sid: "AllowSESPuts"
               Resource:
                 Fn::Join:
-                  ["", ["arn:aws:s3:::", Ref: "${self:custom.bucketRef}", "/*"]]
+                  ["", ["arn:aws:s3:::", Ref: S3SharedBucket, "/*"]]
               Condition:
                 StringEquals:
                   "aws:Referer": { Ref: AWS::AccountId }

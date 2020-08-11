@@ -1,8 +1,18 @@
 # heimdall
 
-[![Build Status](https://travis-ci.com/fterh/heimdall.svg?branch=master)](https://travis-ci.com/fterh/heimdall)
-[![Maintainability](https://api.codeclimate.com/v1/badges/8400b327ea3d328c9f5e/maintainability)](https://codeclimate.com/github/fterh/heimdall/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/8400b327ea3d328c9f5e/test_coverage)](https://codeclimate.com/github/fterh/heimdall/test_coverage)
+Fork of Heimdemall email alias service (fterh/heimdall) with additional features
+
+Features added:
+- Allow selecting alias names. Original serve auto generated an alias. This uses the subject as the alias (the body as the description). Leave the subject blank to auto generate an alias.
+- Support outbound email aliases. Heimdall supported aliases only when another sender initiated the communication. There was no way to initiate communication with an alias. This is now supported in generate command. Here is an example.
+To: generate@<YOUR DOMAIN>
+SUBJECT: <CUSTOM_ALIAS_NAME>:<TO_EMAIL>
+BODY: <DESCRIPTION OF ALIAS>
+
+When you send emails to <CUSTOM_ALIAS_NAME>@<YOUR DOMAIN> it will automacally forward to the email specified
+- Encrypt the Email password in Amazon SSM
+
+
 
 Heimdall is a self-hosted email alias/forwarding service.
 I built this as a privacy tool to fight spam and also better manage access to my personal email address.

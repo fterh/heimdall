@@ -23,65 +23,32 @@ export const decomposeUnpureAliasValue = (
     unpureAliasValue
   );
 
-  if (decoded.senderAddress === "") {
-    throw new Error(
-      "Original sender address not found. This could happen when sending an email directly to alias."
-    );
-  }
-
   return {
     pureAliasValue: decoded.aliasValue,
     senderAddress: decoded.senderAddress
   };
 };
 
-export const generateOriginalSenderEmailAddress = (
-  unpureAliasValue: string,
-  originalToRecipients: Array<EmailAddress>
-): EmailAddress => {
-  const decomposed = decomposeUnpureAliasValue(unpureAliasValue);
-  let aliasIsMissing = true;
+export const generateOutboundMailOptions = ({
+  unpureAliasValue,
+  alias,
+  parsedMail
+}: {unpureAliasValue: string, alias: Alias, parsedMail: ParsedMail}): Mail.Options => {
+  let {pureAliasValue, senderAddress} = decomposeUnpureAliasValue(unpureAliasValue);
 
-  const newToRecipients: Array<EmailAddress> = originalToRecipients
-    // Convert into parsed objects
-    .map(
-      recipient =>
-        addrs.parseOneAddress(recipient.address) as addrs.ParsedMailbox
-    )
-    // Remove all other recipients except for (unpure) alias
-    .filter(parsedRecipient => parsedRecipient.local === unpureAliasValue)
-    // Generate original sender's email address object
-    .map(() => {
-      aliasIsMissing = false;
-      return {
-        name: "",
-        address: decomposed.senderAddress
-      };
-    });
-
-  if (aliasIsMissing) {
-    throw new Error(
-      `Alias not detected among "to" email addresses; this should not happen.`
-    );
+  if (!senderAddress) {
+    if (alias.email) {
+      senderAddress = alias.email;
+    } else {
+      throw new Error(
+        `Missing sender address for email ${unpureAliasValue}`
+      )
+    } 
   }
 
-  return newToRecipients[0];
-};
-
-export const generateOutboundMailOptions = (
-  unpureAliasValue: string,
-  parsedMail: ParsedMail
-): Mail.Options => {
-  const originalSender = generateOriginalSenderEmailAddress(
-    unpureAliasValue,
-    parsedMail.to.value
-  );
-
-  const pureAlias = decomposeUnpureAliasValue(unpureAliasValue).pureAliasValue;
-
   const mailOptions: Mail.Options = {
-    from: `${pureAlias}@${operationalDomain}`,
-    to: originalSender,
+    from: `${pureAliasValue}@${operationalDomain}`,
+    to: {name: '', address: senderAddress},
     subject: parsedMail.subject,
     html:
       parsedMail.html !== false
@@ -106,7 +73,7 @@ export default async (unpureAliasValue: string, parsedMail: ParsedMail) => {
     throw new Error(`Alias=${pureAliasValue} not found in database!`);
   }
 
-  const mailOptions = generateOutboundMailOptions(unpureAliasValue, parsedMail);
+  const mailOptions = generateOutboundMailOptions({alias, unpureAliasValue, parsedMail});
   await sendEmail(mailOptions);
   await alias.didSendEmail();
 

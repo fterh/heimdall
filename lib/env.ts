@@ -25,6 +25,7 @@ export let awsId: string,
   awsSmtpPort: string,
   awsSmtpUser: string,
   awsSmtpPass: string,
+  awsParameterStoreName: string,
   baseDomain: string,
   devSubdomain: string | undefined,
   email: string;
@@ -35,6 +36,7 @@ export let awsId: string,
   awsSmtpPort,
   awsSmtpUser,
   awsSmtpPass,
+  awsParameterStoreName,
   baseDomain,
   email
 ] = readEnvironmentVariables([
@@ -43,6 +45,7 @@ export let awsId: string,
   "AWS_SMTP_PORT",
   "AWS_SMTP_USER",
   "AWS_SMTP_PASS",
+  "AWS_PARAMATER_STORE_NAME",
   "BASE_DOMAIN",
   "EMAIL"
 ]);
@@ -78,6 +81,7 @@ const exportData = {
   awsSmtpPort,
   awsSmtpUser,
   awsSmtpPass,
+  awsParameterStoreName,
   baseDomain,
   devSubdomain,
   email,

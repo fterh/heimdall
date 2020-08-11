@@ -4,6 +4,7 @@ import generateAliasValue from "./generateAliasValue";
 
 export interface AliasData {
   value: string;
+  email?: string;
   description: string;
   creationDate: Date;
   countReceived: number;
@@ -25,6 +26,7 @@ export default class Alias implements AliasData {
   private _countSent: number;
   private _lastReceivedDate?: Date;
   private _lastSentDate?: Date;
+  private _email?: string;
 
   private static client = new DynamoDB.DocumentClient();
 
@@ -51,6 +53,9 @@ export default class Alias implements AliasData {
   get lastSentDate(): Date | undefined {
     return this._lastSentDate;
   }
+  get email(): string | undefined {
+    return this._email;
+  }
 
   protected constructor(options: AliasData) {
     this._value = options.value;
@@ -60,6 +65,7 @@ export default class Alias implements AliasData {
     this._countSent = options.countSent;
     this._lastReceivedDate = options.lastReceivedDate;
     this._lastSentDate = options.lastSentDate;
+    this._email = options.email;
   }
 
   // Utils
@@ -82,6 +88,7 @@ export default class Alias implements AliasData {
       TableName: config.tableName,
       Item: {
         alias: alias.value,
+        email: alias.email,
         description: alias.description,
         creationDate: alias.creationDate.getTime(),
         countReceived: alias.countReceived,
@@ -101,6 +108,7 @@ export default class Alias implements AliasData {
       creationDate: new Date(rawAlias.creationDate),
       countReceived: rawAlias.countReceived,
       countSent: rawAlias.countSent,
+      email: rawAlias.email,
       lastReceivedDate: rawAlias.lastReceivedDate
         ? new Date(rawAlias.lastReceivedDate)
         : undefined,
@@ -124,20 +132,23 @@ export default class Alias implements AliasData {
     return possibleAlias !== undefined;
   }
 
-  static async generateAlias(description: string): Promise<Alias> {
-    console.log(`Generating new alias for description=${description}`);
-
+  static async generateUniqueAlias(): Promise<string> {
     let generatedAliasValue: string;
     do {
       generatedAliasValue = generateAliasValue();
     } while (await Alias.aliasExists(generatedAliasValue));
 
+    return generatedAliasValue;
+  }
+
+  static async generateAlias({aliasValue, email, description}: { aliasValue: string, email: string | undefined, description: string}): Promise<Alias> {
     console.log(
-      `Generated aliasValue=${generatedAliasValue} for description=${description}`
+      `Generated aliasValue=${aliasValue} for description=${description}`
     );
 
     const alias = new Alias({
-      value: generatedAliasValue,
+      value: aliasValue,
+      email,
       description,
       creationDate: new Date(),
       countReceived: 0,

@@ -7,11 +7,17 @@ Features added:
 - Support outbound email aliases. Heimdall supported aliases only when another sender initiated the communication. There was no way to initiate communication with an alias. This is now supported in `generate` command. Here is an example.
 ```
 To: generate@<YOUR DOMAIN>
-SUBJECT: <CUSTOM ALIAS NAME>:<TO EMAIL>
+SUBJECT: <CUSTOM ALIAS NAME>:<EMAIL ADDRESS TO FORWARD EMAIL TO>
 BODY: <DESCRIPTION OF ALIAS>
 ```
 
-When you send emails to `<CUSTOM_ALIAS_NAME>@<YOUR DOMAIN>` it will automacally forward to the email specified
+```
+To: generate@aliasname.com
+SUBJECT: myfriend:bob.smith@gmail.com
+BODY: Alias for my friend bob
+```
+
+When you send emails to `<CUSTOM_ALIAS_NAME>@<YOUR DOMAIN>` it will automatically forward to the email specified
 - Encrypt the Email password in Amazon SSM
 
 

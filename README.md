@@ -1,6 +1,8 @@
 # heimdall
 
-Fork of Heimdemall email alias service (fterh/heimdall) with additional features
+[![Build Status](https://travis-ci.com/fterh/heimdall.svg?branch=master)](https://travis-ci.com/fterh/heimdall)
+[![Maintainability](https://api.codeclimate.com/v1/badges/8400b327ea3d328c9f5e/maintainability)](https://codeclimate.com/github/fterh/heimdall/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/8400b327ea3d328c9f5e/test_coverage)](https://codeclimate.com/github/fterh/heimdall/test_coverage)
 
 Features added:
 - Allow selecting alias names (original service only used randomly generated aliases). This uses the email subject as the alias name (the body as the description) in the `generate` command. Leave the subject blank to auto generate an alias.

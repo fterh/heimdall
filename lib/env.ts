@@ -20,6 +20,7 @@ const readEnvironmentVariables = (arr: Array<string>): Array<string> => {
   return arr.map(key => readEnvironmentVariable(key));
 };
 
+/* eslint-disable */
 export let awsId: string,
   awsSmtpHost: string,
   awsSmtpPort: string,
@@ -48,6 +49,7 @@ export let awsId: string,
 ]);
 
 devSubdomain = readEnvironmentVariable("DEV_SUBDOMAIN", true);
+/* eslint-enable */
 
 export const generateOperationalDomain = (
   stage: string,

@@ -10,11 +10,6 @@ jest.mock("../../../lib/sendEmail");
 
 type Callback = (err: any, data: any) => void;
 
-beforeEach(() => {
-  // Fix: https://github.com/dwyl/aws-sdk-mock/issues/145
-  AWSMock.setSDK(path.resolve(__dirname, "../../../node_modules/aws-sdk"));
-});
-
 afterEach(() => {
   AWSMock.restore();
 });

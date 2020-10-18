@@ -25,9 +25,6 @@ const _sendEmail = sendEmail as jest.Mock;
 const deleteObjectSpy = jest.fn();
 
 beforeEach(() => {
-  // Fix: https://github.com/dwyl/aws-sdk-mock/issues/145
-  AWSMock.setSDK(path.resolve(__dirname, "../../node_modules/aws-sdk"));
-
   AWSMock.mock("S3", "getObject", { Body: Buffer.from("test data") });
   AWSMock.mock("S3", "deleteObject", (params: any, callback: Callback) => {
     deleteObjectSpy();

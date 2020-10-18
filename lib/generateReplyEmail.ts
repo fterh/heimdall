@@ -19,7 +19,7 @@ export default (
     return mailOptions;
   }
 
-  let references = replyTo.references || [];
+  const references = replyTo.references || [];
   references.push(messageId);
 
   return {

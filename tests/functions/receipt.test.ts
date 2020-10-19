@@ -1,4 +1,3 @@
-import path from "path";
 import { S3EventRecord } from "aws-lambda";
 import * as AWSMock from "aws-sdk-mock";
 import { handler } from "../../functions/receipt";

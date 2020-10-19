@@ -1,4 +1,3 @@
-import path from "path";
 import * as AWSMock from "aws-sdk-mock";
 import remove from "../../../lib/commands/remove";
 import sendEmail from "../../../lib/sendEmail";

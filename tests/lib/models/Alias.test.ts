@@ -1,4 +1,3 @@
-import path from "path";
 import { DynamoDB } from "aws-sdk";
 import * as AWSMock from "aws-sdk-mock";
 import Alias, { AliasData } from "../../../lib/models/Alias";

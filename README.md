@@ -68,6 +68,8 @@ Email `generate@yourverifieddomain.com` with the description as the subject. You
 
 The description lets you identify an alias and its use. E.g. "Sign up for Service X".
 
+![Screenshot](https://user-images.githubusercontent.com/24870040/97097478-d09b7600-16ab-11eb-9ae0-594bf2fa8653.png)
+
 #### List aliases
 
 Email `list@yourverifieddomain.com`. You will receive a list of all aliases as a reply.

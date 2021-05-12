@@ -15,7 +15,7 @@
     "fast-deep-equal": "^3.1.1",
     "js-base64": "^2.5.1",
     "mailparser": "^2.7.7",
-    "nodemailer": "^6.4.2",
+    "nodemailer": "^6.4.16",
     "random-words": "^1.1.0"
   },
   "devDependencies": {

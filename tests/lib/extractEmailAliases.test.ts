@@ -32,8 +32,7 @@ test("Verified domain email appears numerous times in `to` and `cc` headers", as
 
 it(`should handle "alias+base64@domain.com" format`, async () => {
   const email = await generateTestEmail({
-    to:
-      "testAlias+dGhlcXVpY2ticm93bmZveGp1bXBlZG92ZXJ0aGVsYXp5ZG9nQHdlaXJkZG9tYWluLmNvbQ==@yarntest.domain.com"
+    to: "testAlias+dGhlcXVpY2ticm93bmZveGp1bXBlZG92ZXJ0aGVsYXp5ZG9nQHdlaXJkZG9tYWluLmNvbQ==@yarntest.domain.com"
   });
   const extracted = extractEmailAliases(email);
   expect(extracted).toStrictEqual([

@@ -20,7 +20,8 @@ export default (
       contentType: inboundAttachment.contentType,
       contentDisposition: inboundAttachment.contentDisposition,
       // Hack to fix inaccurate (too wide) MailparserAttachment["headers"] typedefs
-      headers: (inboundAttachment.headers as unknown) as NodemailerAttachment["headers"],
+      headers:
+        inboundAttachment.headers as unknown as NodemailerAttachment["headers"],
       content: inboundAttachment.content
     } as NodemailerAttachment;
   });

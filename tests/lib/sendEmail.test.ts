@@ -22,7 +22,7 @@ it("should call the transporter's sendMail method with the correct mail options"
     sendMail: jest.fn()
   };
 
-  await _sendMail((spyTransporter as unknown) as Mail, {
+  await _sendMail(spyTransporter as unknown as Mail, {
     from: "test@test.com"
   });
   expect(spyTransporter.sendMail).toHaveBeenCalledTimes(1);

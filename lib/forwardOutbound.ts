@@ -19,9 +19,8 @@ interface DecomposedUnpureAliasData {
 export const decomposeUnpureAliasValue = (
   unpureAliasValue: string
 ): DecomposedUnpureAliasData => {
-  const decoded = senderAddressEncodeDecode.decodeUnpureAliasValue(
-    unpureAliasValue
-  );
+  const decoded =
+    senderAddressEncodeDecode.decodeUnpureAliasValue(unpureAliasValue);
 
   if (decoded.senderAddress === "") {
     throw new Error(
@@ -98,8 +97,8 @@ export const generateOutboundMailOptions = (
 export default async (unpureAliasValue: string, parsedMail: ParsedMail) => {
   console.log("Attempting to forward received email to original sender");
 
-  const pureAliasValue = decomposeUnpureAliasValue(unpureAliasValue)
-    .pureAliasValue;
+  const pureAliasValue =
+    decomposeUnpureAliasValue(unpureAliasValue).pureAliasValue;
 
   const alias = await Alias.getAlias(pureAliasValue);
   if (alias === undefined) {

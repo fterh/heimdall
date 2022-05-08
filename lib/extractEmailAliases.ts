@@ -10,6 +10,7 @@ export default (parsed: ParsedMail): Array<string> => {
   const recipients = parsed.to.value.concat(parsed.cc ? parsed.cc.value : []);
 
   return recipients
+    .filter(emailObject => emailObject.address !== undefined)
     .map(emailObject => emailObject.address)
     .filter(emailAddress => emailAddress.includes(`@${operationalDomain}`))
     .map(emailAddress => {

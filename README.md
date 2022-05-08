@@ -103,7 +103,9 @@ Received emails must be <30MB. Outgoing emails must be <10MB.
 
 ## Setup
 
-**Pre-requisites:** You need to own a domain and have an AWS account. For reasonable use cases, you should not exceed AWS's free tier (which is very generous).
+**Pre-requisites:** You need to own a domain and have an AWS account.
+For reasonable use cases, you should not exceed AWS's free tier (which is very generous).
+You should also already have Yarn and NodeJS installed.
 
 **Optional:** To be able to reply to emails, you need to request AWS Support to [un-sandbox your SES account](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/request-production-access.html).
 
@@ -112,9 +114,10 @@ Received emails must be <30MB. Outgoing emails must be <10MB.
    Take note of that, and also your connection information on SES's "SMTP Settings" page.
 3. Populate required environment variables in `.env.sample`, and rename to `.env`.
    It is important that `EMAIL` matches your personal email exactly.
-4. Run `yarn global add serverless`.
-5. Run `yarn`.
-6. Set up Serverless, then run `yarn run deploy-prod`.
+   Also note that you should avoid port 25, due to [AWS's default blocking of outbound traffic](https://aws.amazon.com/premiumsupport/knowledge-center/ec2-port-25-throttle/).
+4. Run `yarn global add serverless`. Then, check out [Serverless's guide](https://www.serverless.com/framework/docs/providers/aws/guide/credentials) to set up Serverless's credentials for accessing your AWS account programmatically.
+5. Run `yarn install`.
+6. [Set up Serverless](https://www.serverless.com/framework/docs/providers/aws/guide/credentials), then run `yarn run deploy-prod`.
 7. Add a receipt rule in SES to trigger your S3 bucket (created in step 6).
    For "recipients", enter your domain name (e.g. `yourverifieddomain.com`).
    Preferably, name your rule descriptively (e.g. `prod`).

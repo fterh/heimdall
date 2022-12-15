@@ -20,7 +20,10 @@ it("should generate an alias with the description and send a response email", as
   await generate(testEmail);
 
   expect(Alias.generateAlias).toHaveBeenCalledTimes(1);
-  expect(Alias.generateAlias).toHaveBeenCalledWith("Some description");
+  expect(Alias.generateAlias).toHaveBeenCalledWith({
+    aliasValue: undefined,
+    description: "Some description"
+  });
 
   expect(sendEmail).toHaveBeenCalledTimes(1);
   expect(sendEmail).toHaveBeenCalledWith({
@@ -43,5 +46,8 @@ it("`should generate an alias for an email without a subject", async () => {
 
   await generate(testEmail);
 
-  expect(Alias.generateAlias).toHaveBeenCalledWith("No description");
+  expect(Alias.generateAlias).toHaveBeenCalledWith({
+    aliasValue: undefined,
+    description: "No description"
+  });
 });

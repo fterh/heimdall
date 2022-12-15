@@ -17,6 +17,11 @@ export interface GetAliasesResult {
   lastEvaluatedKey?: DynamoDB.Key;
 }
 
+export interface AliasConfig {
+  aliasValue?: string;
+  description: string;
+}
+
 export default class Alias implements AliasData {
   private _value: string;
   private _description: string;
@@ -124,20 +129,29 @@ export default class Alias implements AliasData {
     return possibleAlias !== undefined;
   }
 
-  static async generateAlias(description: string): Promise<Alias> {
-    console.log(`Generating new alias for description=${description}`);
+  static async generateAlias({ aliasValue, description }: AliasConfig) {
+    console.log(`Generating new alias ${aliasValue} for description=${description}`);
 
-    let generatedAliasValue: string;
-    do {
-      generatedAliasValue = generateAliasValue();
-    } while (await Alias.aliasExists(generatedAliasValue));
+    let value = aliasValue
+    if (!aliasValue) {
+      do {
+        value = generateAliasValue();
+      } while (await Alias.aliasExists(value));
+    }
+
+    if (!/^[A-Z0-9._%+-]*/i.test(value!)) {
+      throw new Error(
+        `Alias value ${aliasValue} is invalid. It must only contain alphanumeric characters, periods, underscores, and hyphens.`
+      );
+    }
+
 
     console.log(
-      `Generated aliasValue=${generatedAliasValue} for description=${description}`
+      `Generated aliasValue=${value} for description=${description}`
     );
 
     const alias = new Alias({
-      value: generatedAliasValue,
+      value: value!,
       description,
       creationDate: new Date(),
       countReceived: 0,

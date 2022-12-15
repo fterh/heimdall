@@ -24,7 +24,7 @@ export default class MockAlias implements AliasData {
     this.lastSentDate = options.lastSentDate;
   }
 
-  static generateAlias = jest.fn(async (description: string) => {
+  static generateAlias = jest.fn(async ({ description }: string) => {
     return new MockAlias({
       value: "randomlygeneratedaliasvalue",
       description,

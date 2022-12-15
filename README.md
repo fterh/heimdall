@@ -64,7 +64,7 @@ To interact with the service, send a single email to one of the following email 
 
 #### Generate an alias
 
-Email `generate@yourverifieddomain.com` with the description as the subject. You will receive the generated alias as a reply.
+Email `generate@yourverifieddomain.com` with the description as the subject, and the local part of the alias as the text content. You will receive the generated alias as a reply.
 
 The description lets you identify an alias and its use. E.g. "Sign up for Service X".
 

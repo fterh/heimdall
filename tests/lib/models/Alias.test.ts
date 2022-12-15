@@ -54,9 +54,9 @@ describe("Test generateAlias", () => {
 
     const putSpy = jest
       .spyOn(Alias, "putAlias")
-      .mockImplementation(async () => {});
+      .mockImplementation(async () => { });
 
-    await Alias.generateAlias("some description");
+    await Alias.generateAlias({ aliasValue: '', description: "some description" });
 
     expect(generateAliasValue).toHaveBeenCalledTimes(3);
     expect(putSpy).toHaveBeenCalledTimes(1);
@@ -264,7 +264,7 @@ describe("Test didReceiveEmail and didSendEmail", () => {
   it("should update alias's receipt properties and put into table", async () => {
     const putSpy = jest
       .spyOn(Alias, "putAlias")
-      .mockImplementation(async () => {});
+      .mockImplementation(async () => { });
 
     const testAlias = (await Alias.getAlias("value")) as Alias;
 
@@ -282,7 +282,7 @@ describe("Test didReceiveEmail and didSendEmail", () => {
   it("should update alias's sent properties and put into table", async () => {
     const putSpy = jest
       .spyOn(Alias, "putAlias")
-      .mockImplementation(async () => {});
+      .mockImplementation(async () => { });
 
     const testAlias = (await Alias.getAlias("value")) as Alias;
 

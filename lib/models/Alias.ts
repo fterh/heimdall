@@ -132,14 +132,14 @@ export default class Alias implements AliasData {
   static async generateAlias({ aliasValue, description }: AliasConfig) {
     console.log(`Generating new alias ${aliasValue} for description=${description}`);
 
-    let value = aliasValue
+    let value = aliasValue?.trim()
     if (!aliasValue) {
       do {
         value = generateAliasValue();
       } while (await Alias.aliasExists(value));
     }
 
-    if (!/^[A-Z0-9._%+-]*/i.test(value!)) {
+    if (!/^[A-Z0-9._%+-]*$/i.test(value!)) {
       throw new Error(
         `Alias value ${aliasValue} is invalid. It must only contain alphanumeric characters, periods, underscores, and hyphens.`
       );

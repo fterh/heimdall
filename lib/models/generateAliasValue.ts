@@ -1,7 +1,6 @@
 // @ts-ignore
 import randomWords from "random-words";
-
-const NUM_WORDS = 4;
+import { numWords } from "../env";
 
 export default (): string => {
   console.log("Generating alias");
@@ -9,7 +8,7 @@ export default (): string => {
   const options = {
     exactly: 1,
     separator: "",
-    wordsPerString: NUM_WORDS
+    wordsPerString: numWords
   };
 
   return randomWords(options)[0];

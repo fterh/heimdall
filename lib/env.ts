@@ -1,5 +1,7 @@
 require("dotenv").config();
 
+const DEFAULT_NUM_WORDS = 2;
+
 const readEnvironmentVariable = (
   key: string,
   optional: boolean = false
@@ -51,6 +53,16 @@ export let awsId: string,
 devSubdomain = readEnvironmentVariable("DEV_SUBDOMAIN", true);
 /* eslint-enable */
 
+export const readNumWords = (): number => {
+  const numWordsRaw = readEnvironmentVariable("NUM_WORDS", true);
+  const maybeNumWords = Number(numWordsRaw);
+  if (maybeNumWords === 0 || isNaN(maybeNumWords)) {
+    return DEFAULT_NUM_WORDS;
+  } else {
+    return maybeNumWords;
+  }
+};
+
 export const generateOperationalDomain = (
   stage: string,
   devSubdomain: string,
@@ -67,6 +79,7 @@ export const generateOperationalDomain = (
   return baseDomain;
 };
 
+export const numWords = readNumWords();
 export const stage = process.env["STAGE"] || "dev";
 export const operationalDomain = generateOperationalDomain(
   stage,
@@ -83,6 +96,7 @@ const exportData = {
   baseDomain,
   devSubdomain,
   email,
+  numWords,
   operationalDomain,
   stage
 };

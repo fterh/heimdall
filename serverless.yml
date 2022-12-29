@@ -9,7 +9,7 @@ custom:
 
 provider:
   name: aws
-  runtime: nodejs14.x
+  runtime: nodejs18.x
   stage: ${file(lib/env.js):serverless.stage}
   region: us-west-2
   iamRoleStatements:
